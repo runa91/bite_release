@@ -1,13 +1,4 @@
 
-import os
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"  
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-try:
-    # os.system("pip install --upgrade  torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html")
-    os.system("pip install --upgrade  torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/cu101/torch_stable.html")
-except Exception as e:
-    print(e)
-
 import argparse
 import os.path
 import json
@@ -589,8 +580,6 @@ def run_complete_inference(img_path_or_img, crop_choice, use_ttopt):
 
 ########################################################################################################################
 
-# see: https://huggingface.co/spaces/radames/PIFu-Clothed-Human-Digitization/blob/main/PIFu/spaces.py
-
 description = '''
 # BITE
 
@@ -668,4 +657,4 @@ demo = gr.Interface(
     examples_per_page=14,
 )
 
-demo.launch()   # share=True)
+demo.launch(share=True)
