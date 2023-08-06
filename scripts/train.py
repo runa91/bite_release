@@ -35,23 +35,6 @@ from stacked_hourglass.datasets.samplers.custom_gc_sampler import CustomGCSample
 from stacked_hourglass.datasets.samplers.custom_gc_sampler_noclasses import CustomGCSamplerNoCLass
 from configs.barc_cfg_defaults import get_cfg_defaults, update_cfg_global_with_yaml, get_cfg_global_updated
 
-'''
-class PrintLog():
-    def __init__(self, out_file):
-        self.out_file = out_file
-        # self.print('------------------------------------------------------')
-    def clean_file(self):
-        # this function deletes all content of that file
-        with open(self.out_file,'w') as file:
-            pass
-    def print(self, *args, **kwargs):
-        print(*args, **kwargs)
-        with open(self.out_file,'a') as file:
-            print(*args, **kwargs, file=file)
-    def print_log_only(self, my_string):
-        with open(self.out_file,'a') as file:
-            print(my_string, file=file)
-'''
 class PrintLog():
     def __init__(self, out_file):
         self.out_file = out_file

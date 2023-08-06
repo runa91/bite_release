@@ -79,30 +79,38 @@ All configuration files can be found in src/configs. You will need to adjust pat
 
 ## Usage
 
-### Demo
-In order to run our pretrained model on new sample images, prepare image crops and put them into the folder datasets/test_image_crops. The crops can have arbitrary rectangular shape, but should show the dog more or less in the center of the image. Please have a look at the provided example image.
-
-Demo on the Stanford Extra dataset:
-```shell
-    python scripts/ttopt_fromref_v7_sketchfab.py \
-    --workers 12 \
-    --config refinement_cfg_test_withvertexwisegc_csaddnonflat.yaml \
-    --model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
-    --suffix ttopt_vtest1
+### Inference
+#### Gradio Demo 
+We release code that is used for the our [huggingface demo](https://bite.is.tue.mpg.de/). You can create your own local demo with a similar interface by running: 
+```shellInterface
+    python scripts/gradio_demo.py
 ```
+
+#### Inference for Stanford Extra dataset or full Image Folders
+In order to run our pretrained model on new sample images, prepare image crops and put them into the folder datasets/test_image_crops. The crops can have arbitrary rectangular shape, but should show the dog more or less in the center of the image. 
 
 Demo on all images within the folder datasets/test_image_crops:
 ```shell
-    python scripts/ttopt_fromref_v7_sketchfab.py \
-    --workers 12 \
-    --config refinement_cfg_test_withvertexwisegc_csaddnonflat_crops.yaml \
-    --model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
-    --suffix ttopt_vtest1
+python scripts/ttopt_fromref_v7_sketchfab.py \
+--workers 12 \
+--config refinement_cfg_test_withvertexwisegc_csaddnonflat_crops.yaml \
+--model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
+--suffix ttopt_vtest1
 ```
 
+Demo on the Stanford Extra dataset:
+```shell
+python scripts/ttopt_fromref_v7_sketchfab.py \
+--workers 12 \
+--config refinement_cfg_test_withvertexwisegc_csaddnonflat.yaml \
+--model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
+--suffix ttopt_vtest1
+```
 
 ### Training
-Train BARC part of the network
+Train BARC+ part of the network:
+* basically the same as BARC training code released in [this repo](https://github.com/runa91/barc_release)
+* we call it BARC+ because of the new dog model
 ```shell
 python scripts/train.py \
 --workers 12 \
@@ -113,7 +121,19 @@ python scripts/train.py \
 --model-file-3d barc_3d_pret/checkpoint.pth.tar
 ```
 
+Train Refinement Network (= BITE):
+```shell
+python scripts/train_withref.py \
+--checkpoint debug_cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0 \
+--workers 12 \
+-lw barc_loss_weights_allzeros.json \
+-lwr refinement_loss_weights_withgc_withvertexwise_addnonflat.json \
+--config refinement_cfg_train_withvertexwisegc_isflat_csmorestanding.yaml \
+continue \
+--model-file-complete dm39dnnv3_barc_v2b/checkpoint.pth.tar \
+--new-optimizer 1
 
+```
 
 
 ## Citation
