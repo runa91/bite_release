@@ -1,0 +1,24 @@
+
+paths:
+  ROOT_OUT_PATH: './results/'
+  ROOT_CHECKPOINT_PATH: './checkpoint/'
+  MODELPATH_NORMFLOW: './checkpoint/barc_normflow_pret/rgbddog_v3_model.pt'
+
+smal:
+  SMAL_MODEL_TYPE: '39dogs_norm_newv3'  # '39dogs_diffsize'   # 'barc'
+  SMAL_KEYP_CONF: 'olive'   # 'green'
+
+optim:
+  LR: 5e-4
+  SCHEDULE: [150, 175, 200]
+  GAMMA: 0.1
+  MOMENTUM: 0
+  WEIGHT_DECAY: 0
+  EPOCHS: 220
+  BATCH_SIZE: 12       # keep 12 (needs to be an even number, as we have a custom data sampler)
+  TRAIN_PARTS: 'all_without_shapedirs'
+
+data:
+  DATASET: 'stanext24'
+  SHORTEN_VAL_DATASET_TO: 600  # this is faster as we do not evaluate on the whole validation set  
+  VAL_OPT: 'val'

@@ -1,0 +1,20 @@
+
+
+
+{
+    "keyp_ref": 0.2,
+    "silh_ref": 50.0,
+    "pose_legs_side": 1.0,
+    "pose_legs_tors": 1.0,
+    "pose_tail_side": 0.0,
+    "pose_tail_tors": 0.0,
+    "pose_spine_side": 0.0,
+    "pose_spine_tors": 0.0,
+    "reg_trans": 0.0,
+    "reg_flength": 0.0,
+    "reg_pose": 0.0,
+    "gc_plane": 5.0,     
+    "gc_blowplane": 5.0,        
+    "gc_vertexwise": 10.0, 
+    "gc_isflat": 0.5
+}

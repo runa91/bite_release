@@ -1,0 +1,77 @@
+{
+    "silhouette": {     
+        "weight": 40.0,   
+        "weight_vshift": 20.0,
+        "value": 0.0
+    },
+    "keyp":{                   
+        "weight": 0.2,     
+        "weight_vshift": 0.01,
+        "value": 0.0  
+    },
+    "pose_legs_side":{                  
+        "weight": 1.0,      
+        "weight_vshift": 1.0,
+        "value": 0.0  
+    },
+    "pose_legs_tors":{                  
+        "weight": 10.0,     
+        "weight_vshift": 10.0,
+        "value": 0.0  
+    },
+    "pose_tail_side":{                  
+        "weight": 1,      
+        "weight_vshift": 1,     
+        "value": 0.0  
+    },
+    "pose_tail_tors":{                   
+        "weight": 10.0,     
+        "weight_vshift": 10.0,
+        "value": 0.0  
+    },
+    "pose_spine_side":{                  
+        "weight": 0.0,      
+        "weight_vshift": 0.0,
+        "value": 0.0  
+    },
+    "pose_spine_tors":{                  
+        "weight": 0.0,      
+        "weight_vshift": 0.0,
+        "value": 0.0  
+    },
+    "gc_plane":{                   
+        "weight": 10.0,      
+        "weight_vshift": 20.0,
+        "value": 0.0  
+    },
+    "gc_belowplane":{                   
+        "weight": 10.0,      
+        "weight_vshift": 20.0,
+        "value": 0.0  
+    },
+    "lapctf": {
+        "weight": 0.0,
+        "weight_vshift": 10.0,    
+        "value": 0.0
+    },
+    "arap": {
+        "weight": 0.0,
+        "weight_vshift": 0.0,    
+        "value": 0.0
+    },
+    "edge": {
+        "weight": 0.0,
+        "weight_vshift": 10.0,  
+        "value": 0.0
+    },
+    "normal": {
+        "weight": 0.0,      
+        "weight_vshift": 1.0,   
+        "value": 0.0
+    },
+    "laplacian": {
+        "weight": 0.0,
+        "weight_vshift": 0.0,   
+        "value": 0.0
+    }
+}

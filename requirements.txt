@@ -1,0 +1,15 @@
+torch==1.6.0
+torchvision==0.7.0
+pytorch3d==0.2.5
+kornia==0.4.0 
+matplotlib
+opencv-python
+trimesh
+scipy
+chumpy
+pymp
+importlib-resources
+pycocotools
+openpyxl
+dominate
+git+https://github.com/runa91/FrEIA.git

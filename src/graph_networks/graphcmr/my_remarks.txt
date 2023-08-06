@@ -1,0 +1,11 @@
+
+this folder contains code from https://github.com/nkolot/GraphCMR/tree/master/models
+
+
+other (newer) networks operating on meshes such as SMAL would be:
+    https://github.com/microsoft/MeshTransformer
+    https://github.com/microsoft/MeshGraphormer
+    
+see also:
+    https://arxiv.org/pdf/2112.01554.pdf, page 13
+        (Neural Head Avatars from Monocular RGB Videos)

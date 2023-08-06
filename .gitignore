@@ -1,0 +1,177 @@
+
+#custom 
+/data
+/checkpoint
+debugging
+/datasets
+src/smal_pytorch/smal_data/optional
+/datasets/*
+!/datasets/test_image_crops
+/results
+/gradio_cached_examples
+/flagged
+*_orig.py
+*_orig.yaml
+*copy.py
+src/graph_networks/graphcmr/data/meshes
+src/graph_networks/graphcmr/old_data
+src/evaluation/*.obj
+src/evaluation/*.ply
+/old
+src/graph_networks/losses_for_vertex_wise_predictions/debugging_results
+/overview_bite_cvpr
+
+#/data/dog_toys_and_unity_models
+#/data/smal_data/new_dog_models/additional_info
+#!/data/smal_data/new_dog_models/additional_info/dog39_registrations_with_breeds.pdf
+#/data/smal_data/smalr_uv_map
+#/data/smal_data/textures_from_blender
+#/data/stanext_related_data/animalpose_hg8_v0_results_on_StanExt
+#/data/stanext_related_data/animalpose_hg8_v1_results_on_StanExt
+#!data/stanext_related_data/ground_contact_annotations/all_vertex_distances.npy
+#data/stanext_related_data/ground_contact_annotations/stage3/vis
+#data/stanext_related_data/ground_contact_annotations/stage2b/vis
+#data/stanext_related_data/ground_contact_annotations/stage3/vertex_distances_gc_nongc
+#data/stanext_related_data/ground_contact_annotations/stage2b/vertex_distances_gc_nongc
+#data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl
+#data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl
+#data/smal_data_remeshed/uniform_surface_sampling
+#data/texture_related/
+#/data/*
+src/test_time_optimization/texture/debug
+src/test_time_optimization/texture/debug_v2
+
+# files that are too big
+data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete_withtraintestval.pkl
+data/stanext_related_data/ground_contact_annotations/all_vertex_distances.npy
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
