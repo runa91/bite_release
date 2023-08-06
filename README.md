@@ -101,6 +101,21 @@ Demo on all images within the folder datasets/test_image_crops:
 ```
 
 
+### Training
+Train BARC part of the network
+```shell
+python scripts/train.py \
+--workers 12 \
+--checkpoint debug_dm39dnnv3_barc_v2b \
+--loss-weight-path barc_loss_weights_with3dcgloss_higherbetaloss_v2_dm39dnnv3v2.json \
+--config barc_cfg_train.yaml start \
+--model-file-hg hg_ksp_fromnewanipose_stanext_v0/checkpoint.pth.tar \
+--model-file-3d barc_3d_pret/checkpoint.pth.tar
+```
+
+
+
+
 ## Citation
 
 If you find this Model & Software useful in your research we would kindly ask you to cite:
