@@ -76,7 +76,7 @@ folder
 
 ### Configurations
 
-All configuration files can be found in src/configs. You will need to adjust paths in barc_cfg_{train,test,visualization}.yaml and dataset_path_configs.py. If desired you can change the weights for different loss functions used at training time, see barc_loss_weights.json. We do not recommend changing zero-value weights to non-zero values, as most of the unused loss functions were removed.
+All configuration files can be found in src/configs. You will need to adjust paths in dataset_path_configs.py. If desired you can change the weights for different loss functions used at training time, see barc_loss_weights.json and refinement_loss_weights_withgc_withvertexwise_addnonflat.json. We do not recommend changing zero-value weights to non-zero values, as some of the unused loss functions were removed.
 
 
 
@@ -180,7 +180,7 @@ automatically terminate your rights under this [License](LICENSE).
 
 
 ## Note
-In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation as example). I have in the meanwhile left University and while you can feel free to use those code snipplets, I will not be able to provide support.
+In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation as example). However, I have in the meanwhile left University and while you can feel free to use those code snipplets, I will not be able to provide support.
 
 
 ## Contact

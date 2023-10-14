@@ -5,25 +5,25 @@ paths:
   MODELPATH_NORMFLOW: './checkpoint/barc_normflow_pret/rgbddog_v3_model.pt'
 
 smal:
-  SMAL_MODEL_TYPE: '39dogs_norm_newv3'    # '39dogs_norm'  # '39dogs_diffsize'  # 'barc'
-  SMAL_KEYP_CONF: 'olive'   # 'green'
+  SMAL_MODEL_TYPE: '39dogs_norm_newv3'   
+  SMAL_KEYP_CONF: 'olive'  '
 
 optim:
-  LR: 5e-5    # 5e-7  # (new) 5e-6   # 5e-5    #  5e-5  # 5e-4
-  SCHEDULE: [150, 175, 200]   # [220, 270]   # [150, 175, 200]
+  LR: 5e-5    
+  SCHEDULE: [150, 175, 200]   
   GAMMA: 0.1
   MOMENTUM: 0
   WEIGHT_DECAY: 0
-  EPOCHS: 220   # 300
-  BATCH_SIZE: 14  # 12       # keep 12 (needs to be an even number, as we have a custom data sampler)
-  TRAIN_PARTS: 'refinement_model'   # 'refinement_model_and_shape' # 'refinement_model'
+  EPOCHS: 220   
+  BATCH_SIZE: 14   # (needs to be an even number, as we have a custom data sampler)
+  TRAIN_PARTS: 'refinement_model'   
 
 params:
-  REF_NET_TYPE: 'multrot01all_res34' # 'multrot01all_res34'    # 'multrot01all'    # 'multrot01'   # 'multrot01'   # 'multrot01'  # 'multrot'   # 'multrot_res34' # 'multrot' # 'add'
+  REF_NET_TYPE: 'multrot01all_res34' 
   REF_DETACH_SHAPE: True
-  GRAPHCNN_TYPE: 'multistage_simple'  # 'inexistent'
-  SHAPEREF_TYPE: 'inexistent'   # 'linear'  # 'inexistent'
-  ISFLAT_TYPE: 'linear'     # 'inexistent'  # 'inexistent'
+  GRAPHCNN_TYPE: 'multistage_simple'  
+  SHAPEREF_TYPE: 'inexistent'  
+  ISFLAT_TYPE: 'linear'   
 
 data:
   DATASET: 'stanext24_withgc_csaddnonflatmorestanding'  #  'stanext24_withgc_csaddnonflat'  # 'stanext24_withgc_cs0'

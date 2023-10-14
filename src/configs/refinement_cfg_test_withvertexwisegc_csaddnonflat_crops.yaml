@@ -5,19 +5,19 @@ paths:
   MODELPATH_NORMFLOW: './checkpoint/barc_normflow_pret/rgbddog_v3_model.pt'
 
 smal:
-  SMAL_MODEL_TYPE: '39dogs_norm_newv3'  # '39dogs_norm'  # '39dogs_diffsize'   # 'barc'
-  SMAL_KEYP_CONF: 'olive'       # 'green'
+  SMAL_MODEL_TYPE: '39dogs_norm_newv3' 
+  SMAL_KEYP_CONF: 'olive'       
 
 optim:
   BATCH_SIZE: 12       
 
 params:
-  REF_NET_TYPE: 'multrot01all_res34' # 'multrot01all_res34'    # 'multrot01all'    # 'multrot01'  # 'multrot' # 'add'
+  REF_NET_TYPE: 'multrot01all_res34' 
   REF_DETACH_SHAPE: True
-  GRAPHCNN_TYPE: 'multistage_simple'  # 'inexistent'
-  SHAPEREF_TYPE: 'inexistent'   # 'linear'  # 'inexistent'
-  ISFLAT_TYPE: 'linear'     # 'inexistent'  # 'inexistent'
+  GRAPHCNN_TYPE: 'multistage_simple'  
+  SHAPEREF_TYPE: 'inexistent'  
+  ISFLAT_TYPE: 'linear'    
 
 data:
   DATASET: 'ImgCropList'
-  VAL_OPT: 'test'  # 'val'
+  VAL_OPT: 'test' 
