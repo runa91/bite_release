@@ -17,8 +17,6 @@
   * [Acknowledgments](#acknowledgments)
   * [Contact](#contact)
 
-Step 1: Click on the gif to the left
-
 ## Description
 
 **BITE: Beyond priors for Improved Three-D dog pose Estimation** is a method for dog pose and shape estimation.
@@ -180,12 +178,10 @@ automatically terminate your rights under this [License](LICENSE).
 
 
 ## Note
-In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation as example). However, I have in the meanwhile left University and while you can feel free to use those code snipplets, I will not be able to provide support.
+In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation for example). However, I have in the meanwhile left University and while you are free to use those code snipplets, I will not be able to provide support.
 
 
 ## Contact
-
-The code of this repository was implemented by [Nadine Rüegg](https://ps.is.mpg.de/person/nrueegg).
 
 For commercial licensing (and all related questions for business applications), please contact [ps-licensing@tue.mpg.de](mailto:ps-licensing@tue.mpg.de).
 
