@@ -77,13 +77,9 @@ class DogsVOC(data.Dataset):
         self.test_name_list = list(self.test_dict.keys())       # 5031
 
         # breed json_path
-        breed_json_path = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra/StanExt_breed_dict_v2.json'
+        breed_json_path = '...../Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra/StanExt_breed_dict_v2.json'
 
         # only use images that show fully visible dogs in standing or walking poses
-        '''path_easy_images_list = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra/AMT_StanExt_easy_images.txt'
-        easy_images_list = [line.rstrip('\n') for line in open(path_easy_images_list)]
-        self.train_name_list = sorted(list(set(easy_images_list) & set(self.train_name_list)))
-        self.test_name_list = sorted(list(set(easy_images_list) & set(self.test_name_list)))'''
         self.train_name_list = sorted(self.train_name_list)
         self.test_name_list = sorted(self.test_name_list)
 
@@ -103,12 +99,9 @@ class DogsVOC(data.Dataset):
                     self.test_name_list[ind] = my_sample
 
         # add results for eyes, whithers and throat as obtained through anipose
-        self.path_anipose_out_root = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra/animalpose_hg8_v0_results_on_StanExt/'
+        self.path_anipose_out_root = '...../Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra/animalpose_hg8_v0_results_on_StanExt/'
 
-
-        ###############################################
-
-        self.dogvoc_path_root = '/ps/scratch/nrueegg/new_projects/Animals/data/pascal_voc_parts/'
+        self.dogvoc_path_root = '...../Animals/data/pascal_voc_parts/'
         self.dogvoc_path_images = self.dogvoc_path_root + 'dog_images/' 
         self.dogvoc_path_masks = self.dogvoc_path_root + 'dog_masks/'
 
@@ -168,9 +161,6 @@ class DogsVOC(data.Dataset):
             data = self.test_dict[name]
             # data = utils_stanext.get_dog(self.test_dict, name)
 
-        # self.do_augment = False
-
-        # index = 5       ##########################
         if self.is_train:
             img_info = self.train_set[index]
         else:
@@ -195,11 +185,6 @@ class DogsVOC(data.Dataset):
 
         # For single-person pose estimation with a centered/scaled figure
         img = load_image(img_path)  # CxHxW
-
-        # img_test = img[0, img_info['bbox'][1]:img_info['bbox'][1]+img_info['bbox'][3], img_info['bbox'][0]:img_info['bbox'][0]+img_info['bbox'][2]]
-        # import cv2
-        # cv2.imwrite('/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/yy.png', np.asarray(img_test*255, np.uint8))
-
 
         # segmentation map (we reshape it to 3xHxW, such that we can do the 
         #   same transformations as with the image)
@@ -307,9 +292,6 @@ class DogsVOC(data.Dataset):
             #   -> weird function that tries to rescale! Because of that I add zeros and ones in the beginning
             xx = body_part_matrix.clone()
 
-            # import pdb; pdb.set_trace()
-
-
             body_part_matrix = crop(body_part_matrix, c, s, [self.inp_res, self.inp_res], rot=r, interp='nearest')  
                     
             body_part_matrix = body_part_matrix*255 - 2
@@ -317,16 +299,6 @@ class DogsVOC(data.Dataset):
             body_part_matrix[body_part_matrix == -2] = -1
             body_part_matrix[body_part_matrix == 16] = -1
             body_part_matrix[body_part_matrix == 253] = -1
-
-            '''print(np.unique(body_part_matrix.numpy()))
-            print(np.unique(body_part_matrix[0, :, :].numpy()))
-            print(np.unique(body_part_matrix[1, :, :].numpy()))
-            print(np.unique(body_part_matrix[2, :, :].numpy()))'''
-
-            # import cv2
-            # cv2.imwrite('/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/yy2.png', np.asarray((inp[0, :, :]+1)*100, np.uint8))
-            # cv2.imwrite('/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/yy3.png', (40*(1+body_part_matrix[0, :, :].numpy())).astype(np.uint8))
-
 
 
         # Generate ground truth

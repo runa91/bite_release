@@ -162,7 +162,7 @@ def save_image_with_part_segmentation_from_gt_annotation(partseg_annots, out_pat
 def save_image_from_prepared_partseg(partseg_init, out_path):
     # partseg_init: (256, 256, 11)
     # partseg_init = output_reproj['partseg_images_hg_nograd'][0, :, :, :].detach().cpu().numpy()
-    # out_path = '/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/debugging_output/partseg_hg_0.png'
+    # out_path = '...../Animals/dog_project/pytorch-stacked-hourglass/debugging_output/partseg_hg_0.png'
     partseg = np.argmax(partseg_init, axis=2)
     partseg_image = np.zeros((256, 256, 3))
     for ind in range(partseg_init.shape[2]):

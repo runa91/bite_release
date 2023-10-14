@@ -5,8 +5,6 @@ import os
 import sys
 
 
-# SMAL_DATA_DIR = '/is/cluster/work/nrueegg/dog_project/pytorch-dogs-inference/src/smal_pytorch/smpl_models/'
-# SMAL_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'smal_pytorch', 'smal_data')
 SMAL_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'smal_data')
 
 # we replace the old SMAL model by a more dog specific model (see BARC cvpr 2022 paper)

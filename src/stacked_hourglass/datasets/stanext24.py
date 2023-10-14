@@ -140,85 +140,6 @@ class StanExt(data.Dataset):
 
 
 
-    def prepare_anipose_res_and_save(self):
-        # I only had to run this once ...
-        # path_animalpose_res_root = '/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/results/animalpose_hg8_v0/'
-        path_animalpose_res_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/results/results/hg_anipose_after01bugfix_v1/stanext24_XXX_e300_json/'
-
-        train_dict, init_test_dict, init_val_dict = utils_stanext.load_stanext_json_as_dict(split_train_test=True, V12=self.V12)
-        train_name_list = list(train_dict.keys())
-        val_name_list = list(init_val_dict.keys())
-        test_name_list = list(init_test_dict.keys())
-        all_dicts = [train_dict, init_val_dict, init_test_dict]
-        all_name_lists = [train_name_list, val_name_list, test_name_list]
-        all_prefixes = ['train', 'val', 'test']
-        for ind in range(3):
-            this_name_list = all_name_lists[ind]
-            this_dict = all_dicts[ind]
-            this_prefix = all_prefixes[ind]
-
-            for index in range(0, len(this_name_list)):
-                print(index)
-                name = this_name_list[index]
-                data = this_dict[name]
-
-                img_path = os.path.join(self.img_folder, data['img_path'])
-
-                path_animalpose_res = os.path.join(path_animalpose_res_root.replace('XXX', this_prefix), data['img_path'].replace('.jpg', '.json'))
-
-
-                # prepare predicted keypoints
-                '''if is_train:
-                    path_animalpose_res = os.path.join(path_animalpose_res_root, 'train_stanext', 'res_' + str(index) + '.json')
-                else:
-                    path_animalpose_res = os.path.join(path_animalpose_res_root, 'test_stanext', 'res_' + str(index) + '.json')
-                '''
-                with open(path_animalpose_res) as f: animalpose_data = json.load(f)
-                anipose_joints_256 = np.asarray(animalpose_data['pred_joints_256']).reshape((-1, 3)) 
-                anipose_center = animalpose_data['center']
-                anipose_scale = animalpose_data['scale']
-                anipose_joints_64 = anipose_joints_256 / 4        
-                '''thrs_21to24 = 0.2
-                anipose_joints_21to24 = np.zeros((4, 3)))    
-                for ind_j in range(0:4):
-                    anipose_joints_untrans = transform(anipose_joints_64[20+ind_j, 0:2], anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_trans_again = transform(anipose_joints_untrans+1, anipose_center, anipose_scale, [64, 64], invert=False, rot=0, as_int=False)
-                    anipose_joints_21to24[ind_j, :2] = anipose_joints_untrans
-                    if anipose_joints_256[20+ind_j, 2] >= thrs_21to24:
-                        anipose_joints_21to24[ind_j, 2] = 1'''
-                anipose_joints_0to24 = np.zeros((24, 3))
-                for ind_j in range(24):
-                    # anipose_joints_untrans = transform(anipose_joints_64[ind_j, 0:2], anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_untrans = transform(anipose_joints_64[ind_j, 0:2]+1, anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_0to24[ind_j, :2] = anipose_joints_untrans
-                    anipose_joints_0to24[ind_j, 2] = anipose_joints_256[ind_j, 2]
-                # save anipose result for usage later on
-                out_path = os.path.join(self.path_anipose_out_root, data['img_path'].replace('.jpg', '.json'))
-                if not os.path.exists(os.path.dirname(out_path)): os.makedirs(os.path.dirname(out_path))
-                out_dict = {'orig_anipose_joints_256': list(anipose_joints_256.reshape((-1))),
-                            'anipose_joints_0to24': list(anipose_joints_0to24[:, :3].reshape((-1))),
-                            'orig_index': index,
-                            'orig_scale': animalpose_data['scale'],
-                            'orig_center': animalpose_data['center'],
-                            'data_split': this_prefix,      # 'is_train': is_train, 
-                            }
-                with open(out_path, 'w') as outfile: json.dump(out_dict, outfile)
-        return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def __getitem__(self, index):
 
@@ -238,14 +159,6 @@ class StanExt(data.Dataset):
 
         img_path = os.path.join(self.img_folder, data['img_path'])
         try:
-            # import pdb; pdb.set_trace()
-
-            '''new_anipose_root_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/results/results/hg_anipose_after01bugfix_v1/stanext24_XXX_e300_json/'
-            adjusted_new_anipose_root_path = new_anipose_root_path.replace('XXX', train_val_test_Prefix)
-            new_anipose_res_path = adjusted_new_anipose_root_path + data['img_path'].replace('.jpg', '.json')
-            with open(new_anipose_res_path) as f: new_anipose_data = json.load(f)
-            '''
-
             anipose_res_path = os.path.join(self.path_anipose_out_root, data['img_path'].replace('.jpg', '.json'))
             with open(anipose_res_path) as f: anipose_data = json.load(f)
             anipose_thr = 0.2
@@ -346,13 +259,6 @@ class StanExt(data.Dataset):
         meta2 = {'index' : index, 'center' : c, 'scale' : s,
             'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight, 
            'ind_dataset': 3} 
-
-        # import pdb; pdb.set_trace()
-
-        # out_path_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/stanext_preprocessing/old_animalpose_version/'
-        # out_path_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/stanext_preprocessing/v0/'
-        # save_input_image_with_keypoints(inp, meta['tpts'], out_path = out_path_root + name.replace('/', '_'), ratio_in_out=self.inp_res/self.out_res)
-
 
         # return different things depending on dataset_mode
         if self.dataset_mode=='keyp_only':

@@ -112,29 +112,6 @@ class StanExtGC(data.Dataset):
         random.seed(4)
         random.shuffle(self.test_name_list)
 
-        '''
-        already_labelled  = ['n02093991-Irish_terrier/n02093991_2874.jpg',
-                            'n02093754-Border_terrier/n02093754_1062.jpg',
-                            'n02092339-Weimaraner/n02092339_1672.jpg',
-                            'n02096177-cairn/n02096177_4916.jpg',
-                            'n02110185-Siberian_husky/n02110185_725.jpg',
-                            'n02110806-basenji/n02110806_761.jpg',
-                            'n02094433-Yorkshire_terrier/n02094433_2474.jpg',
-                            'n02097474-Tibetan_terrier/n02097474_8796.jpg',
-                            'n02099601-golden_retriever/n02099601_2495.jpg']
-        self.trainvaltest_dict = dict(self.train_dict)
-        for d in (init_test_dict, init_val_dict): self.trainvaltest_dict.update(d)
-
-        gc_annot_csv = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/my_gcannotations_qualification.csv'
-        gc_row_list = read_csv(gc_annot_csv)
-
-        json_acceptable_string = (gc_row_list[0]['vertices']).replace("'", "\"")
-        self.gc_dict = json.loads(json_acceptable_string)
-
-        self.train_name_list = already_labelled
-        self.test_name_list = already_labelled
-        '''
-
         
         # stanext breed dict (contains for each name a stanext specific index)
         breed_json_path = os.path.join(STANEXT_RELATED_DATA_ROOT_DIR, 'StanExt_breed_dict_v2.json')
@@ -142,29 +119,13 @@ class StanExtGC(data.Dataset):
 
         # load smal symmetry info
         self.sym_ids_dict = get_symmetry_indices()
-        
-        '''
-        self.train_name_list = sorted(self.train_name_list)
-        self.test_name_list = sorted(self.test_name_list)
-        random.seed(4)
-        random.shuffle(self.train_name_list)
-        random.shuffle(self.test_name_list)
-        if shorten_dataset_to is not None:
-            # sometimes it is useful to have a smaller set (validation speed, debugging)
-            self.train_name_list = self.train_name_list[0 : min(len(self.train_name_list), shorten_dataset_to)]
-            self.test_name_list = self.test_name_list[0 : min(len(self.test_name_list), shorten_dataset_to)]
-            # special case for debugging: 12 similar images
-            if shorten_dataset_to == 12:
-                my_sample = self.test_name_list[2]
-                for ind in range(0, 12):
-                    self.test_name_list[ind] = my_sample
-        '''
         print('len(dataset): ' + str(self.__len__()))
 
         # add results for eyes, whithers and throat as obtained through anipose -> they are used
         #   as pseudo ground truth at training time.
         # self.path_anipose_out_root = os.path.join(STANEXT_RELATED_DATA_ROOT_DIR, 'animalpose_hg8_v0_results_on_StanExt')
         self.path_anipose_out_root = os.path.join(STANEXT_RELATED_DATA_ROOT_DIR, 'animalpose_hg8_v1_results_on_StanExt')     # this is from hg_anipose_after01bugfix_v1
+        assert os.path.exists(self.path_anipose_out_root)
         # self.prepare_anipose_res_and_save()
 
         
@@ -203,86 +164,6 @@ class StanExtGC(data.Dataset):
 
 
 
-    def prepare_anipose_res_and_save(self):
-        # I only had to run this once ...
-        # path_animalpose_res_root = '/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/results/animalpose_hg8_v0/'
-        path_animalpose_res_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/results/results/hg_anipose_after01bugfix_v1/stanext24_XXX_e300_json/'
-
-        train_dict, init_test_dict, init_val_dict = utils_stanext.load_stanext_json_as_dict(split_train_test=True, V12=self.V12)
-        train_name_list = list(train_dict.keys())
-        val_name_list = list(init_val_dict.keys())
-        test_name_list = list(init_test_dict.keys())
-        all_dicts = [train_dict, init_val_dict, init_test_dict]
-        all_name_lists = [train_name_list, val_name_list, test_name_list]
-        all_prefixes = ['train', 'val', 'test']
-        for ind in range(3):
-            this_name_list = all_name_lists[ind]
-            this_dict = all_dicts[ind]
-            this_prefix = all_prefixes[ind]
-
-            for index in range(0, len(this_name_list)):
-                print(index)
-                name = this_name_list[index]
-                data = this_dict[name]
-
-                img_path = os.path.join(self.img_folder, data['img_path'])
-
-                path_animalpose_res = os.path.join(path_animalpose_res_root.replace('XXX', this_prefix), data['img_path'].replace('.jpg', '.json'))
-
-
-                # prepare predicted keypoints
-                '''if is_train:
-                    path_animalpose_res = os.path.join(path_animalpose_res_root, 'train_stanext', 'res_' + str(index) + '.json')
-                else:
-                    path_animalpose_res = os.path.join(path_animalpose_res_root, 'test_stanext', 'res_' + str(index) + '.json')
-                '''
-                with open(path_animalpose_res) as f: animalpose_data = json.load(f)
-                anipose_joints_256 = np.asarray(animalpose_data['pred_joints_256']).reshape((-1, 3)) 
-                anipose_center = animalpose_data['center']
-                anipose_scale = animalpose_data['scale']
-                anipose_joints_64 = anipose_joints_256 / 4        
-                '''thrs_21to24 = 0.2
-                anipose_joints_21to24 = np.zeros((4, 3)))    
-                for ind_j in range(0:4):
-                    anipose_joints_untrans = transform(anipose_joints_64[20+ind_j, 0:2], anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_trans_again = transform(anipose_joints_untrans+1, anipose_center, anipose_scale, [64, 64], invert=False, rot=0, as_int=False)
-                    anipose_joints_21to24[ind_j, :2] = anipose_joints_untrans
-                    if anipose_joints_256[20+ind_j, 2] >= thrs_21to24:
-                        anipose_joints_21to24[ind_j, 2] = 1'''
-                anipose_joints_0to24 = np.zeros((24, 3))
-                for ind_j in range(24):
-                    # anipose_joints_untrans = transform(anipose_joints_64[ind_j, 0:2], anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_untrans = transform(anipose_joints_64[ind_j, 0:2]+1, anipose_center, anipose_scale, [64, 64], invert=True, rot=0, as_int=False)-1
-                    anipose_joints_0to24[ind_j, :2] = anipose_joints_untrans
-                    anipose_joints_0to24[ind_j, 2] = anipose_joints_256[ind_j, 2]
-                # save anipose result for usage later on
-                out_path = os.path.join(self.path_anipose_out_root, data['img_path'].replace('.jpg', '.json'))
-                if not os.path.exists(os.path.dirname(out_path)): os.makedirs(os.path.dirname(out_path))
-                out_dict = {'orig_anipose_joints_256': list(anipose_joints_256.reshape((-1))),
-                            'anipose_joints_0to24': list(anipose_joints_0to24[:, :3].reshape((-1))),
-                            'orig_index': index,
-                            'orig_scale': animalpose_data['scale'],
-                            'orig_center': animalpose_data['center'],
-                            'data_split': this_prefix,      # 'is_train': is_train, 
-                            }
-                with open(out_path, 'w') as outfile: json.dump(out_dict, outfile)
-        return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def __getitem__(self, index):
 
         
@@ -296,68 +177,15 @@ class StanExtGC(data.Dataset):
             data = self.test_dict[name]
         img_path = os.path.join(self.img_folder, data['img_path'])
 
-
-        '''
-        # for debugging only
-        train_val_test_Prefix = 'train'
-        name = self.train_name_list[index]
-        data = self.trainvaltest_dict[name]
-        img_path = os.path.join(self.img_folder, data['img_path'])
-
-        if self.dataset_mode=='complete_with_gc':
-            n_verts_smal = 3889
-
-            gc_info_raw = self.gc_dict['bite/' + name]      # a list with all vertex numbers that are in ground contact
-            gc_info = []
-            gc_info_tch = torch.zeros((n_verts_smal))
-            for ind_v in gc_info_raw:
-                if ind_v < n_verts_smal:
-                    gc_info.append(ind_v)
-                    gc_info_tch[ind_v] = 1
-            gc_info_available = True
-        '''
-
         # array of shape (n_verts_smal, 3) with [first: no-contact=0 contact=1     second: index of vertex     third: dist]
         gc_vertdists_overview = self.gc_annots_overview[name.split('.')[0]]['gc_vertdists_overview']
 
         gc_info_tch = torch.tensor(gc_vertdists_overview[:, :]) # torch.tensor(gc_vertdists_overview[:, 0])
         gc_info_available = True
 
-
-
-
-        # import pdb; pdb.set_trace()
-        debugging = False
-        if debugging:
-            import shutil
-            import trimesh
-            from smal_pytorch.smal_model.smal_torch_new import SMAL
-            smal = SMAL()
-            verts = smal.v_template.detach().cpu().numpy()
-            faces = smal.faces.detach().cpu().numpy()
-            vert_colors = np.repeat(255*gc_info_tch[:, 0].detach().cpu().numpy()[:, None], 3, 1)
-            # vert_colors = np.repeat(255*gc_info_np[:, None], 3, 1)
-            my_mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=False,  maintain_order=True)
-            my_mesh.visual.vertex_colors = vert_colors
-            debug_folder = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/gc_debugging/'
-            my_mesh.export(debug_folder + (name.split('/')[1]).replace('.jpg', '_withgc.obj'))
-            shutil.copy(img_path, debug_folder + name.split('/')[1])
-
-
-
-
-        
         sf = self.scale_factor
         rf = self.rot_factor
         try:
-            # import pdb; pdb.set_trace()
-
-            '''new_anipose_root_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/results/results/hg_anipose_after01bugfix_v1/stanext24_XXX_e300_json/'
-            adjusted_new_anipose_root_path = new_anipose_root_path.replace('XXX', train_val_test_Prefix)
-            new_anipose_res_path = adjusted_new_anipose_root_path + data['img_path'].replace('.jpg', '.json')
-            with open(new_anipose_res_path) as f: new_anipose_data = json.load(f)
-            '''
-
             anipose_res_path = os.path.join(self.path_anipose_out_root, data['img_path'].replace('.jpg', '.json'))
             with open(anipose_res_path) as f: anipose_data = json.load(f)
             anipose_thr = 0.2
@@ -426,38 +254,6 @@ class StanExtGC(data.Dataset):
             img[1, :, :].mul_(random.uniform(0.8, 1.2)).clamp_(0, 1)
             img[2, :, :].mul_(random.uniform(0.8, 1.2)).clamp_(0, 1)
 
-
-
-
-        # import pdb; pdb.set_trace()
-        debugging = False
-        if debugging and do_flip:
-            import shutil
-            import trimesh
-            from smal_pytorch.smal_model.smal_torch_new import SMAL
-            smal = SMAL()
-            verts = smal.v_template.detach().cpu().numpy()
-            faces = smal.faces.detach().cpu().numpy()
-            vert_colors = np.repeat(255*gc_info_tch[:, 0].detach().cpu().numpy()[:, None], 3, 1)
-            # vert_colors = np.repeat(255*gc_info_np[:, None], 3, 1)
-            my_mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=False,  maintain_order=True)
-            my_mesh.visual.vertex_colors = vert_colors
-            debug_folder = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/gc_debugging/'
-            my_mesh.export(debug_folder + (name.split('/')[1]).replace('.jpg', '_withgc_flip.obj'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         # Prepare image and groundtruth map
         inp = crop(img, c, s, [self.inp_res, self.inp_res], rot=r)
         img_border_mask = torch.all(inp > 1.0/256, dim = 0).unsqueeze(0).float()        # 1 is foreground
@@ -476,12 +272,7 @@ class StanExtGC(data.Dataset):
                 tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2]+1, c, s, [self.out_res, self.out_res], rot=r, as_int=False)) - 1
                 target[i], vis = draw_labelmap(target[i], tpts[i], self.sigma, type=self.label_type)
                 target_weight[i, 0] *= vis
-        # NEW:
-        '''target_new, vis_new = draw_multiple_labelmaps((self.out_res, self.out_res), tpts[:, :2]-1, self.sigma, type=self.label_type)
-        target_weight_new = tpts[:, 2].clone().view(nparts, 1) * vis_new
-        target_new[(target_weight_new==0).reshape((-1)), :, :] = 0'''
 
-                        
         # --- Meta info
         this_breed = self.breed_dict[name.split('/')[0]]        # 120
         # add information about location within breed similarity matrix
@@ -499,13 +290,6 @@ class StanExtGC(data.Dataset):
         meta2 = {'index' : index, 'center' : c, 'scale' : s,
             'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight, 
            'ind_dataset': 3} 
-
-        # import pdb; pdb.set_trace()
-
-        # out_path_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/stanext_preprocessing/old_animalpose_version/'
-        # out_path_root = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/stanext_preprocessing/v0/'
-        # save_input_image_with_keypoints(inp, meta['tpts'], out_path = out_path_root + name.replace('/', '_'), ratio_in_out=self.inp_res/self.out_res)
-
 
         # return different things depending on dataset_mode
         if self.dataset_mode=='keyp_only':

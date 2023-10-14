@@ -380,42 +380,6 @@ def main(args):
                 batch_sampler=val_custom_batch_sampler,
                 num_workers=args.workers, pin_memory=True)   
  
-
-
-
-
-
-    # save results one time before starting
-    '''
-    save_imgs_path = None   # '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/rubbish/'
-    valid_string, valid_acc = do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
-                                                            StanExt.DATA_INFO,
-                                                            weight_dict=weight_dict,
-                                                            weight_dict_ref=weight_dict_ref,
-                                                            acc_joints=StanExt.ACC_JOINTS,
-                                                            metrics=cfg.data.VAL_METRICS, 
-                                                            save_imgs_path=save_imgs_path)
-    predictions = np.zeros((1,1))
-    valid_loss = - valid_acc        
-    # print metrics
-    epoch = 0
-    tqdm.write('   | VAL: ' + valid_string)
-
-    # remember best acc (acc is actually iou) and save checkpoint
-    is_best = valid_acc > best_acc
-    best_acc = max(valid_acc, best_acc)
-    save_checkpoint({
-        'epoch': epoch + 1,
-        'arch': cfg.params.ARCH,
-        'state_dict': model.state_dict(),
-        'best_acc': best_acc,
-        'optimizer' : optimizer.state_dict(),
-    }, predictions, is_best, checkpoint=path_checkpoint, snapshot=args.snapshot)
-    '''
-
-
-
-
     # train and eval
     lr = cfg.optim.LR
     pl.print('initial learning rate: ' + str(lr))
@@ -430,7 +394,7 @@ def main(args):
                                                     weight_dict_ref=weight_dict_ref,
                                                     acc_joints=StanExt.ACC_JOINTS)
             # evaluate on validation set
-            save_imgs_path = None   # '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/rubbish/'
+            save_imgs_path = None   
             valid_string, valid_acc = do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
                                                                     StanExt.DATA_INFO,
                                                                     weight_dict=weight_dict,

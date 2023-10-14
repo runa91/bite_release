@@ -377,31 +377,6 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
         'flength_mean': torch.from_numpy(data_info.flength_mean).float().to(device),
         'flength_std': torch.from_numpy(data_info.flength_std).float().to(device)}
 
-    '''
-    return_mesh_with_gt_groundplane = True
-    if return_mesh_with_gt_groundplane:
-        remeshing_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data_remeshed/uniform_surface_sampling/my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl'
-        with open(remeshing_path, 'rb') as fp: 
-            remeshing_dict = pkl.load(fp)
-        remeshing_relevant_faces = torch.tensor(remeshing_dict['smal_faces'][remeshing_dict['faceid_closest']], dtype=torch.long, device=device)
-        remeshing_relevant_barys = torch.tensor(remeshing_dict['barys_closest'], dtype=torch.float32, device=device)
-
-    # from smal_pytorch.smal_model.smal_torch_new import SMAL
-    print('start: load smal default model (barc), but only for vertices')
-    smal = SMAL()
-    print('end: load smal default model (barc), but only for vertices')
-    smal_template_verts = smal.v_template.detach().cpu().numpy()
-    smal_faces = smal.faces.detach().cpu().numpy()
-    
-    file_alignment_errors = open(save_imgs_path + '/a_ref_procrustes_alignmnet_errors.txt', 'a') # append mode
-    file_alignment_errors.write(" -----------  start evaluation  ------------- \n ")
-
-    csv_file_alignment_errors = open(save_imgs_path + '/a_ref_procrustes_alignmnet_errors.csv', 'w') # write mode
-    fieldnames = ['name', 'error']
-    writer = csv.DictWriter(csv_file_alignment_errors, fieldnames=fieldnames)
-    writer.writeheader()
-    '''
-
     my_step = 0
     for i, (input, target_dict) in iterable:
         batch_size = input.shape[0]

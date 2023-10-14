@@ -33,12 +33,7 @@ def do_training_step(model, optimiser, input, target, meta, data_info, target_we
 
     with torch.enable_grad():
 
-        # import pdb; pdb.set_trace()
-
         # Forward pass and loss calculation.
-        # output = model(input)       # this is a list
-        '''output = out_dict['out_list']'''
-        # dict_keys(['out_list_kp', 'out_list_seg', 'seg_final', 'out_list_partseg', 'partseg_final'])
         out_dict = model(input)    
 
         # original: loss = sum(joints_mse_loss(o, target, target_weight) for o in output)
@@ -49,12 +44,11 @@ def do_training_step(model, optimiser, input, target, meta, data_info, target_we
         loss_seg_big = segmentation_loss(out_dict['seg_final'], meta)
 
         # NEW for body part segmentation
-
-        '''import pdb; pdb.set_trace()
-        for ind_gt in range(6, 12):
-            out_path_gt_seg = '/ps/scratch/nrueegg/new_projects/Animals/dog_project/pytorch-stacked-hourglass/debugging_output/partseg/gt_' + str(ind_gt) + '.png'
-            save_image_with_part_segmentation_from_gt_annotation(meta['body_part_matrix'].detach().cpu().numpy(), out_path_gt_seg, ind_gt)'''
-
+        '''
+        ind_gt = 6
+        out_path_gt_seg = ......
+        save_image_with_part_segmentation_from_gt_annotation(meta['body_part_matrix'].detach().cpu().numpy(), out_path_gt_seg, ind_gt)
+        '''
 
         # for the second stage where we add a dataset with body part segmentations
         #   and not just fake -1 labels, we calculate body part segmentation loss as well

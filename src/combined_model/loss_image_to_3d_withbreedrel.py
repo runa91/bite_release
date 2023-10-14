@@ -45,7 +45,8 @@ class Loss(torch.nn.Module):
         else:
             self.dog_betas_unity = None
 
-        remeshing_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data_remeshed/uniform_surface_sampling/my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl'
+        root_data_path = os.path.join(os.path.dirname(__file__), '../', 'data')  
+        remeshing_path = os.path.join(root_data_path, 'smal_data_remeshed', 'uniform_surface_sampling', 'my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl')
         with open(remeshing_path, 'rb') as fp: 
             self.remeshing_dict = pkl.load(fp)
         self.remeshing_relevant_faces = torch.tensor(self.remeshing_dict['smal_faces'][self.remeshing_dict['faceid_closest']], dtype=torch.long)

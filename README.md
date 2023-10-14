@@ -44,6 +44,7 @@ To install the remaining dependencies run the following command:
 ### Data Preparation
 
 All necessary data be downloaded [here](https://owncloud.tuebingen.mpg.de/index.php/s/BpPWyzsmfycXdyj). A folder named 'checkpoint' contains pretrained models, copy it to the main folder of this project. Subfolders in a folder called 'data' should be copied to the corresponding location in your project folder.
+Data from stanext_related_data_ground_contact_annotations should be copied to stanext_related_data/ground_contact_annotations, but note that this folder also contains visualization ("vis") subfolders, which you can omit if you are not specifically interested in that part.
 
 Download the Stanford Extra image dataset from https://github.com/benjiebob/StanfordExtra and store it in datasets/StanfordExtra_V12. 
 
@@ -55,6 +56,7 @@ folder
 ├── data
 │   ├── breed_data
 │   ├── graphcmr_data
+│   ├── ground_contact_annotations
 │   ├── smal_data
 │   ├── smal_data_remeshed
 │   ├── stanext_related_data
@@ -175,6 +177,10 @@ use the Data & Software. Any infringement of the terms of this agreement will
 automatically terminate your rights under this [License](LICENSE).
 
 ## Acknowledgments
+
+
+## Note
+In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation as example). I have in the meanwhile left University and while you can feel free to use those code snipplets, I will not be able to provide support.
 
 
 ## Contact

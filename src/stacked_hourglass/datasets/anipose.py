@@ -71,7 +71,7 @@ class AniPose(data.Dataset):
 
         # import pdb; pdb.set_trace()
 
-        self.top_folder = '/ps/scratch/nrueegg/new_projects/Animals/data/animal_pose_dataset/'
+        self.top_folder = '...../Animals/data/animal_pose_dataset/'
         self.folder_imgs_0 = '/ps/project/datasets/VOCdevkit/VOC2012/JPEGImages/'
         self.folder_imgs_1 = os.path.join(self.top_folder, 'animalpose_image_part2', 'dog')
         self.folder_annot_0 = os.path.join(self.top_folder, 'PASCAL2011_animal_annotation', 'dog')
@@ -112,9 +112,9 @@ class AniPose(data.Dataset):
     def read_content(sewlf, xml_file, annot_type='animal_pose'):
         # annot_type is either 'animal_pose' or 'animal_pose_voc' or 'voc'
         # examples:
-        #   animal_pose: '/ps/scratch/nrueegg/new_projects/Animals/data/animal_pose_dataset/animalpose_anno2/cat/ca137.xml'
-        #   animal_pose_voc: '/ps/scratch/nrueegg/new_projects/Animals/data/animal_pose_dataset/PASCAL2011_animal_annotation/cat/2008_005380_1.xml'
-        #   voc: '/ps/project/datasets/VOCdevkit/VOC2012/Annotations/2011_000192.xml'
+        #   animal_pose: '..../Animals/data/animal_pose_dataset/animalpose_anno2/cat/ca137.xml'
+        #   animal_pose_voc: '..../Animals/data/animal_pose_dataset/PASCAL2011_animal_annotation/cat/2008_005380_1.xml'
+        #   voc: '.../VOCdevkit/VOC2012/Annotations/2011_000192.xml'
         if annot_type == 'animal_pose' or annot_type == 'animal_pose_voc':
             my_dict = {}
             tree = ET.parse(xml_file)
@@ -177,8 +177,6 @@ class AniPose(data.Dataset):
 
     def __getitem__(self, index):
 
-        # import pdb; pdb.set_trace()
-
         if self.is_train:
             xml_path = self.train_name_list[index]
         else:
@@ -195,16 +193,8 @@ class AniPose(data.Dataset):
             img_path = os.path.join(self.folder_imgs_1, annot_dict['image'])
             keyword_ymin = 'xmax'
 
-        '''print(img_path)
-        print(annot_dict['keypoints_xyzvis'].shape)
-        print(annot_dict['keypoints_names'])'''
-
-
-
         sf = self.scale_factor
         rf = self.rot_factor
-
-
 
         vis_np = np.zeros((self.DATA_INFO.n_keyp))
         pts_np = np.ones((self.DATA_INFO.n_keyp, 2)) * (-1000)
@@ -213,21 +203,7 @@ class AniPose(data.Dataset):
             ind_new = self.kp_dict[key_lower]
             vis_np[ind_new] = annot_dict['keypoints_xyzvis'][ind_key, 3]
             # remark: the first training run (animalpose_hg8_v0) was without subtracting 1 which would be important!
-            # pts_np[ind_new] = annot_dict['keypoints_xyzvis'][ind_key, 0:2]
-
-            # what we were doing until 08.09.2022:
             pts_np[ind_new] = annot_dict['keypoints_xyzvis'][ind_key, 0:2] - 1
-
-            # new 08.09.2022
-            # pts_np[ind_new] = annot_dict['keypoints_xyzvis'][ind_key, 0:2]  
-
-            # pts_np[ind_new] = annot_dict['keypoints_xyzvis'][ind_key, 0:2]  # - 1
-
-
-
-        '''vis_np = annot_dict['keypoints_xyzvis'][:20, 3]
-        pts_np = annot_dict['keypoints_xyzvis'][:20, :2]
-        pts_np[vis_np==0] = -1000'''
 
         pts_np = np.concatenate((pts_np, vis_np[:, None]), axis=1)
         pts = torch.Tensor(pts_np)
@@ -238,18 +214,6 @@ class AniPose(data.Dataset):
         bbox_xywh = [float(annot_dict['visible_bounds']['xmin'])-1, float(annot_dict['visible_bounds'][keyword_ymin])-1, \
                     float(annot_dict['visible_bounds']['width']), float(annot_dict['visible_bounds']['height'])]
 
-
-
-        '''pts = torch.Tensor(np.asarray(data['joints'])[:20, :])
-        # pts[:, 0:2] -= 1  # Convert pts to zero based
-
-        # inp = crop(img, c, s, [self.inp_res, self.inp_res], rot=r)
-        # sf = scale * 200.0 / res[0]  # res[0]=256
-        # center = center * 1.0 / sf
-        # scale = scale / sf = 256 / 200
-        # h = 200 * scale
-        bbox_xywh = data['img_bbox']'''
-
         bbox_c = [bbox_xywh[0]+0.5*bbox_xywh[2], bbox_xywh[1]+0.5*bbox_xywh[3]]
         bbox_max = max(bbox_xywh[2], bbox_xywh[3])
         bbox_diag = math.sqrt(bbox_xywh[2]**2 + bbox_xywh[3]**2)
@@ -258,14 +222,6 @@ class AniPose(data.Dataset):
         bbox_s = bbox_max / 200. * 256. / 200.  # maximum side of the bbox will be 200
         c = torch.Tensor(bbox_c)
         s = bbox_s
-
-
-
-
-
-
-
-
 
         # For single-person pose estimation with a centered/scaled figure
         nparts = pts.size(0)
@@ -313,22 +269,6 @@ class AniPose(data.Dataset):
         tpts = pts.clone()
         target_weight = tpts[:, 2].clone().view(nparts, 1)
 
-        
-        # cvpr version:
-        '''
-        target = torch.zeros(nparts, self.out_res, self.out_res)
-        for i in range(nparts):
-            # if tpts[i, 2] > 0: # This is evil!!
-            if tpts[i, 1] > 0:
-                tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2]+1, c, s, [self.out_res, self.out_res], rot=r, as_int=False))
-                target[i], vis = draw_labelmap(target[i], tpts[i]-1, self.sigma, type=self.label_type)
-                target_weight[i, 0] *= vis
-        # NEW:
-        target_new, vis_new = draw_multiple_labelmaps((self.out_res, self.out_res), tpts[:, :2]-1, self.sigma, type=self.label_type)
-        target_weight_new = tpts[:, 2].clone().view(nparts, 1) * vis_new
-        target_new[(target_weight_new==0).reshape((-1)), :, :] = 0
-        '''
-
         target = torch.zeros(nparts, self.out_res, self.out_res)
         for i in range(nparts):
             # if tpts[i, 2] > 0: # This is evil!!
@@ -342,55 +282,10 @@ class AniPose(data.Dataset):
                 target[i], vis = draw_labelmap(target[i], tpts[i], self.sigma, type=self.label_type)
                 target_weight[i, 0] *= vis
 
-
-
-
-
-
-
-
-
-
-        # Meta info
-        '''this_breed = self.breed_dict[name.split('/')[0]]'''
-
-        # add information about location within breed similarity matrix
-        '''folder_name = name.split('/')[0]
-        breed_name = folder_name.split(folder_name.split('-')[0] + '-')[1]
-        abbrev = COMPLETE_ABBREV_DICT[breed_name]
-        try:
-            sim_breed_index = COMPLETE_SUMMARY_BREEDS[abbrev]._ind_in_xlsx_matrix 
-        except: # some breeds are not in the xlsx file
-            sim_breed_index = -1'''
-
-        # meta = {'index' : index, 'center' : c, 'scale' : s, 'do_flip' : do_flip, 'rot' : r, 'resolution' : [self.out_res, self.out_res], 'name' : name,
-        #     'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight, 'breed_index': this_breed['index']}
-        # meta = {'index' : index, 'center' : c, 'scale' : s, 'do_flip' : do_flip, 'rot' : r, 'resolution' : self.out_res,
-        #     'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight, 'breed_index': this_breed['index']}   
-        # meta = {'index' : index, 'center' : c, 'scale' : s,
-        #    'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight, 
-        #    'breed_index': this_breed['index'], 'sim_breed_index': sim_breed_index}
         meta = {'index' : index, 'center' : c, 'scale' : s,
                 'pts' : pts, 'tpts' : tpts, 'target_weight': target_weight}
 
-        # import pdb; pdb.set_trace()
-
-
-
-
-
-
-
-
         if self.dataset_mode=='keyp_only':
-            '''
-            debugging_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/debugging/anipose/'
-            if self.is_train:
-                prefix = 'anipose_train_'
-            else:
-                prefix = 'anipose_test_'
-            save_input_image_with_keypoints(inp, meta['tpts'], out_path=debugging_path + prefix + str(index) + '.png', ratio_in_out=self.inp_res/self.out_res)
-            '''
             return inp, target, meta
         elif self.dataset_mode=='keyp_and_seg':
             raise NotImplementedError

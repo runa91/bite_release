@@ -24,14 +24,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../../../"))
 from barc_for_bite.src.graph_networks.graphcmr.pytorch_coma_mesh_operations import generate_transform_matrices
 from barc_for_bite.src.configs.SMAL_configs import SMAL_MODEL_CONFIG
 from barc_for_bite.src.smal_pytorch.smal_model.smal_torch_new import SMAL
-# smal_model_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data/new_dog_models/my_smpl_00791_nadine_Jr_4_dog.pkl'
-
 
 SMAL_MODEL_TYPE = '39dogs_diffsize'        # '39dogs_diffsize'     # '39dogs_norm'  # 'barc'
 smal_model_path = SMAL_MODEL_CONFIG[SMAL_MODEL_TYPE]['smal_model_path']
 
-# data_path_root = "/is/cluster/work/nrueegg/icon_pifu_related/ICON/lib/graph_networks/graphcmr/data/"
-data_path_root = "/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/graphcmr/data/"
+output_path = os.path.join(os.path.dirname(__file__), '../', '../', 'my_output_folder')  
+data_path_root = output_path + "/graph_networks/graphcmr/data/"
 
 smal_dog_model_name = os.path.basename(smal_model_path).split('.pkl')[0]    # 'my_smpl_SMBLD_nbj_v3'
 suffix = "_template"

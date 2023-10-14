@@ -5,7 +5,7 @@ see:
     2.) https://github.com/benjiebob/SMALify/blob/master/smal_model/smal_torch.py
 main changes compared to SMALST and WLDO:
     * new model
-        (/ps/scratch/nrueegg/new_projects/side_packages/SMALify/new_smal_pca/results/my_tposeref_results_3/)
+        (...../side_packages/SMALify/new_smal_pca/results/my_tposeref_results_3/)
         dogs are part of the pca to create the model
         al meshes are centered around their root joint
         the animals are all scaled such that their body length (butt to breast) is 1

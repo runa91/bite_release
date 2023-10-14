@@ -45,61 +45,12 @@ class SketchfabScans(data.Dataset):
         self.all_mesh_paths = glob.glob(self.folder_meshes + '/**/*.obj', recursive=True)
         name_list = glob.glob(os.path.join(self.folder_imgs, '*.png')) + glob.glob(os.path.join(self.folder_imgs, '*.jpg')) + glob.glob(os.path.join(self.folder_imgs, '*.jpeg'))
         name_list = sorted(name_list)
-        # self.test_name_list = [name.split('/')[-1] for name in name_list]
         self.test_name_list = []
         for name in name_list:
-            # if not (('13' in name) or ('dalmatian' in name and '1281' in name)):
-            # if not ('13' in name):
             self.test_name_list.append(name.split('/')[-1])
-
 
         print('len(dataset): ' + str(self.__len__()))
         
-        '''
-        self.test_mesh_path_list = []
-        for img_name in self.test_name_list:
-            breed = img_name.split('_')[0]      # will be french instead of french_bulldog
-            mask = img_name.split('_')[-2]
-            this_mp = []
-            for mp in self.all_mesh_paths:
-                if (breed in mp) and (mask in mp):
-                    this_mp.append(mp)
-            if breed in 'french_bulldog':
-                this_mp_old = this_mp.copy()
-                this_mp = []
-                for mp in this_mp_old:
-                    if ('_' + mask + '.') in mp:
-                        this_mp.append(mp)
-            if not len(this_mp) == 1:
-                print(breed)
-                print(mask)
-                this_mp[0].index(mask)
-                import pdb; pdb.set_trace()
-            else:
-                self.test_mesh_path_list.append(this_mp[0])
-
-        all_pc_paths = []
-        for index in range(len(self.test_name_list)):
-            img_name = self.test_name_list[index]
-            dog_name = img_name.split('_' + img_name.split('_')[-1])[0]
-            breed = img_name.split('_')[0]      # will be french instead of french_bulldog
-            mask = img_name.split('_')[-2]
-            path_pc = self.folder_point_clouds + '/' + dog_name + '.ply'
-            if not path_pc in all_pc_paths:
-                try:
-                    print(path_pc)
-                    mesh_path = self.test_mesh_path_list[index]
-                    mesh_gt = o3d.io.read_triangle_mesh(mesh_path)
-                    n_points = 3000     # 20000
-                    pointcloud = mesh_gt.sample_points_uniformly(number_of_points=n_points)
-                    o3d.io.write_point_cloud(path_pc, pointcloud, write_ascii=False, compressed=False, print_progress=False)
-                    all_pc_paths.append(path_pc)
-                except:
-                    print(path_pc)
-        '''
-
-        # import pdb; pdb.set_trace()
-
         self.test_mesh_path_list = []
         self.all_pc_paths = []
         for index in range(len(self.test_name_list)):
@@ -110,12 +61,10 @@ class SketchfabScans(data.Dataset):
             mesh_path = self.folder_meshes + '/' + dog_name + '.obj'
             path_pc = self.folder_point_clouds + '/' + dog_name + '.ply'
             if dog_name in  ['dalmatian_1281', 'french_bulldog_13']:
-                # mesh_path_for_pc = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/datasets/sketchfab_test_set/meshes_old/dalmatian/1281/Renderbot-animal-obj-1281.obj'
                 mesh_path_for_pc = self.folder_meshes + '/' + dog_name + '_simple.obj'
             else:
                 mesh_path_for_pc = mesh_path 
             self.test_mesh_path_list.append(mesh_path)
-            # if not path_pc in self.all_pc_paths:
             if os.path.isfile(path_pc):
                 self.all_pc_paths.append(path_pc)
             else:
@@ -131,8 +80,6 @@ class SketchfabScans(data.Dataset):
                 pointcloud = mesh_gt.sample_points_uniformly(number_of_points=self.n_pcpoints)
                 o3d.io.write_point_cloud(path_pc, pointcloud, write_ascii=False, compressed=False, print_progress=False)
                 self.all_pc_paths.append(path_pc)
-                # except:
-                #     print(path_pc)
 
         # add keypoint annotations (mesh vertices)
         read_annots_from_csv = False        # True
@@ -143,9 +90,6 @@ class SketchfabScans(data.Dataset):
         else:
             with open(self.pkl_keyp_annots_path, 'rb') as handle:
                 self.all_keypoint_annotations = pkl.load(handle)
-
-
-
 
 
     def _read_keypoint_csv(self, csv_path, folder_meshes=None, get_keyp_coords=True, visualize=False):
@@ -233,19 +177,13 @@ class SketchfabScans(data.Dataset):
         pc_points = np.asarray(pc_trimesh.vertices)
         assert pc_points.shape[0] == self.n_pcpoints
 
-
         # get annotated 3d keypoints
         keyp_3d = self.all_keypoint_annotations[mesh_path.split('/')[-1]]['all_keypoint_coords_and_isvalid']
-
 
         # load image
         img_path = os.path.join(self.folder_imgs, img_name)
         
         img = load_image(img_path)  # CxHxW
-        # try on silhouette images!
-        # seg_path = os.path.join(self.folder_silh, img_name)
-        # img = load_image(seg_path)  # CxHxW
-
         img_vis = np.transpose(img, (1, 2, 0))
         seg_path = os.path.join(self.folder_silh, img_name)
         seg = cv2.imread(seg_path, cv2.IMREAD_UNCHANGED)[:, :, 3]
@@ -270,20 +208,6 @@ class SketchfabScans(data.Dataset):
         silh_3channels = np.stack((seg, seg, seg), axis=0)
         inp_silh = crop(silh_3channels, c, s, [self.inp_res, self.inp_res], rot=r)
 
-        '''
-        # prepare image (cropping and color)
-        img_max = max(img.shape[1], img.shape[2])
-        img_padded = torch.zeros((img.shape[0], img_max, img_max))
-        if img_max == img.shape[2]:
-            start = (img_max-img.shape[1])//2
-            img_padded[:, start:start+img.shape[1], :] = img
-        else:
-            start = (img_max-img.shape[2])//2
-            img_padded[:, :, start:start+img.shape[2]] = img   
-        img = img_padded
-        img_prep = im_to_torch(imresize(img, [self.inp_res, self.inp_res], interp='bilinear'))   
-        inp = color_normalize(img_prep, self.DATA_INFO.rgb_mean, self.DATA_INFO.rgb_stddev)
-        '''
         # add the following fields to make it compatible with stanext, most of them are fake
         target_dict = {'index': index, 'center' : -2, 'scale' : -2, 
             'breed_index': -2, 'sim_breed_index': -2,

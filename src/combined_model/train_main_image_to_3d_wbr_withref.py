@@ -183,7 +183,8 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
 
     return_mesh_with_gt_groundplane = True
     if return_mesh_with_gt_groundplane:
-        remeshing_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data_remeshed/uniform_surface_sampling/my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl'
+        root_data_path = os.path.join(os.path.dirname(__file__), '../', 'data')  
+        remeshing_path = os.path.join(root_data_path, 'smal_data_remeshed', 'uniform_surface_sampling', 'my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl')
         with open(remeshing_path, 'rb') as fp: 
             remeshing_dict = pkl.load(fp)
         remeshing_relevant_faces = torch.tensor(remeshing_dict['smal_faces'][remeshing_dict['faceid_closest']], dtype=torch.long, device=device)
@@ -271,12 +272,6 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
                     target_gc_class_remeshed = torch.einsum('ij,aij->ai', remeshing_relevant_barys, target_gc_class[:, remeshing_relevant_faces].to(device=device, dtype=torch.float32))
                     target_gc_class_remeshed_prep = torch.round(target_gc_class_remeshed).to(torch.long)
 
-
-
-
-
-                # import pdb; pdb.set_trace()
-
                 # new for vertex wise ground contact
                 if (not model.graphcnn_type == 'inexistent') and (save_imgs_path is not None):
                     # import pdb; pdb.set_trace()
@@ -300,30 +295,9 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
                         save_gc_mesh = True # False
                         if save_gc_mesh:
                             my_mesh.export(out_path_gcmesh)
-            
-                        '''
-                        input_image = input[ind_img, :, :, :].detach().clone()
-                        for t, m, s in zip(input_image, data_info.rgb_mean,data_info.rgb_stddev): t.add_(m)
-                        input_image_np = input_image.detach().cpu().numpy().transpose(1, 2, 0) 
-                        out_path = save_debug_path + 'b' + str(ind_img) +'_input.png'
-                        plt.imsave(out_path, input_image_np)
-                        '''
-
-                        # -------------------------------------
-
-                        # import pdb; pdb.set_trace()
-
-
-                        '''
-                        target_gc_class = target_dict['gc'][ind_img, :, 0]
-
-                        current_vertices_smal = vertices_smal[ind_img, :, :]
-
-                        points_centroid, plane_normal, error = fit_plane(current_vertices_smal[target_gc_class==1, :])
-                        '''
 
                         # calculate ground plane
-                        #   (see /is/cluster/work/nrueegg/icon_pifu_related/ICON/debug_code/curve_fitting_v2.py)
+                        #   (see ..../icon_pifu_related/ICON/debug_code/curve_fitting_v2.py)
                         if return_mesh_with_gt_groundplane and 'gc' in target_dict.keys():
 
                             current_verts_remeshed = verts_remeshed[ind_img, :, :]
@@ -341,11 +315,6 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
                                     plane_normal = - plane_normal.detach().cpu().numpy()
                                 data_centroid = data_centroid.detach().cpu().numpy()
 
-
-
-                                # import pdb; pdb.set_trace()
-
-
                                 desired_plane_normal_vector = np.asarray([[0, -1, 0]])
                                 # new approach: use cross product
                                 rotation_axis = np.cross(plane_normal, desired_plane_normal_vector)     #  np.cross(plane_normal, desired_plane_normal_vector)
@@ -362,42 +331,6 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
                                 my_mesh.visual.vertex_colors = vert_colors
                                 out_path_gc_rotated = save_imgs_path + '/' + prefix + 'gc_rotated_' + img_name + '_new.obj'
                                 my_mesh.export(out_path_gc_rotated)
-
-
-
-
-
-
-                                '''# rot = R_sc.align_vectors(plane_normal.reshape((1, -1)), desired_plane_normal_vector)
-                                desired_plane_normal_vector = np.asarray([[0, 1, 0]])
-
-                                rot = R_sc.align_vectors(desired_plane_normal_vector, plane_normal.reshape((1, -1)))        # inv
-                                rot_mat = rot[0].as_matrix()
-
-
-                                current_vertices_smal = vertices_smal[ind_img, :, :].detach().cpu().numpy()
-                                new_smal_vertices = rot[0].apply((current_vertices_smal - data_centroid[None, :]))
-
-                                my_mesh = trimesh.Trimesh(vertices=new_smal_vertices, faces=smal_faces, process=False,  maintain_order=True)
-                                my_mesh.visual.vertex_colors = vert_colors
-                                out_path_gc_rotated = save_imgs_path + '/' + prefix + 'gc_rotated_' + img_name + '_y.obj'
-                                my_mesh.export(out_path_gc_rotated)
-                                '''
-
-
-
-
-
-
-
-
-
-                        # ----
-
-
-                        # -------------------------------------
-
-
 
 
             if index == 0:
@@ -439,35 +372,6 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
             else:
                 # measure accuracy and record loss
                 bs_fake = 1     # batch_size
-        # import pdb; pdb.set_trace()
-
-
-        # save_imgs_path + '/' + prefix + 'rot_tex_pred_' + img_name + '.png'
-        # import pdb; pdb.set_trace()
-        '''
-        for ind_img in range(len(target_dict['index'])): 
-            try: 
-                if test_name_list is not None:
-                    img_name = test_name_list[int(target_dict['index'][ind_img].cpu().detach().numpy())].replace('/', '_')
-                    img_name = img_name.split('.')[0]
-                else:
-                    img_name = str(index) + '_' + str(ind_img)
-                all_image_names = ['keypoints_pred_' + img_name + '.png',  'normal_comp_pred_' + img_name + '.png', 'normal_rot_tex_pred_' + img_name + '.png',  'ref_comp_pred_' + img_name + '.png', 'ref_rot_tex_pred_' + img_name + '.png']
-                all_saved_images = []
-                for sub_img_name in all_image_names:
-                    saved_img = cv2.imread(save_imgs_path + '/' + sub_img_name)
-                    if not (saved_img.shape[0] == 256 and saved_img.shape[1] == 256):
-                        saved_img = cv2.resize(saved_img, (256, 256)) 
-                    all_saved_images.append(saved_img)
-                final_image = np.concatenate(all_saved_images, axis=1)
-                save_imgs_path_sum = save_imgs_path.replace('test_', 'summary_test_')
-                if not os.path.exists(save_imgs_path_sum): os.makedirs(save_imgs_path_sum)
-                final_image_path = save_imgs_path_sum +  '/summary_' + img_name + '.png'
-                cv2.imwrite(final_image_path, final_image)
-            except: 
-                print('dont save a summary image')
-        '''
-                
         
         bs_fake = 1
         if metrics == 'all' or metrics == 'no_loss':
@@ -558,7 +462,8 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
 
     return_mesh_with_gt_groundplane = True
     if return_mesh_with_gt_groundplane:
-        remeshing_path = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data_remeshed/uniform_surface_sampling/my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl'
+        root_data_path = os.path.join(os.path.dirname(__file__), '../', 'data')  
+        remeshing_path = os.path.join(root_data_path, 'smal_data_remeshed', 'uniform_surface_sampling', 'my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl')
         with open(remeshing_path, 'rb') as fp: 
             remeshing_dict = pkl.load(fp)
         remeshing_relevant_faces = torch.tensor(remeshing_dict['smal_faces'][remeshing_dict['faceid_closest']], dtype=torch.long, device=device)
@@ -588,10 +493,6 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
         # ----------------------- do visualization step -----------------------
         with torch.no_grad():
             output, output_unnorm, output_reproj, output_ref, output_ref_comp = model(input, norm_dict=norm_dict)        
-
-
-        # import pdb; pdb.set_trace()
-
 
         sm = torch.nn.Softmax(dim=2)
         ground_contact_probs = sm(output_ref['vertexwise_ground_contact'])
@@ -630,14 +531,8 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
                 target_gc_class_remeshed = torch.einsum('ij,aij->ai', remeshing_relevant_barys, target_gc_class[:, remeshing_relevant_faces].to(device=device, dtype=torch.float32))
                 target_gc_class_remeshed_prep = torch.round(target_gc_class_remeshed).to(torch.long)
 
-
-
-
-                # index = i  
-                # ind_img = 0
                 for ind_img in range(batch_size): #  range(min(12, batch_size)):     # range(12):    # [0]:  #range(0, batch_size):
 
-                    # ind_img = 0
                     if test_name_list is not None:
                         img_name = test_name_list[int(target_dict['index'][ind_img].cpu().detach().numpy())].replace('/', '_')
                         img_name = img_name.split('.')[0]
@@ -668,11 +563,6 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
                             plane_normal = - plane_normal.detach().cpu().numpy()
                         data_centroid = data_centroid.detach().cpu().numpy()
 
-
-
-                        # import pdb; pdb.set_trace()
-
-
                         desired_plane_normal_vector = np.asarray([[0, -1, 0]])
                         # new approach: use cross product
                         rotation_axis = np.cross(plane_normal, desired_plane_normal_vector)     #  np.cross(plane_normal, desired_plane_normal_vector)
@@ -690,79 +580,6 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
                         out_path_gc_rotated = save_imgs_path + '/' + prefix + 'gc_rotated_' + img_name + '_new.obj'
                         my_mesh.export(out_path_gc_rotated)
 
-
-
-                        '''
-                        import pdb; pdb.set_trace()
-
-                        from src.evaluation.registration import preprocess_point_cloud, o3d_ransac, draw_registration_result
-                        import open3d as o3d
-                        import copy
-
-
-                        mesh_gt_path = target_dict['mesh_path'][ind_img]
-                        mesh_gt = o3d.io.read_triangle_mesh(mesh_gt_path)
-
-                        mesh_gt_verts = np.asarray(mesh_gt.vertices)
-                        mesh_gt_faces = np.asarray(mesh_gt.triangles)
-                        diag_gt = np.sqrt(sum((mesh_gt_verts.max(axis=0) - mesh_gt_verts.min(axis=0))**2))
-
-                        mesh_pred_verts = np.asarray(new_smal_vertices)
-                        mesh_pred_faces = np.asarray(smal_faces)
-                        diag_pred = np.sqrt(sum((mesh_pred_verts.max(axis=0) - mesh_pred_verts.min(axis=0))**2))
-                        mesh_pred = o3d.geometry.TriangleMesh()
-                        mesh_pred.vertices = o3d.utility.Vector3dVector(mesh_pred_verts)
-                        mesh_pred.triangles = o3d.utility.Vector3iVector(mesh_pred_faces)
-
-                        # center the predicted mesh around 0
-                        trans = - mesh_pred_verts.mean(axis=0)
-                        mesh_pred_verts_new = mesh_pred_verts + trans
-                        # change the size of the predicted mesh
-                        mesh_pred_verts_new = mesh_pred_verts_new * diag_gt / diag_pred
-
-                        # transform the predicted mesh (rough alignment)
-                        mesh_pred_new = copy.deepcopy(mesh_pred)
-                        mesh_pred_new.vertices = o3d.utility.Vector3dVector(np.asarray(mesh_pred_verts_new))    # normals should not have changed
-                        voxel_size = 0.01       # 0.5
-                        distance_threshold = 0.015  # 0.005 #  0.02   # 1.0
-                        result, src_down, src_fpfh, dst_down, dst_fpfh = o3d_ransac(mesh_pred_new, mesh_gt, voxel_size=voxel_size, distance_threshold=distance_threshold, return_all=True)
-                        transform = result.transformation
-                        mesh_pred_transf = copy.deepcopy(mesh_pred_new).transform(transform)
-
-                        out_path_pred_transf = save_imgs_path + '/' + prefix + 'alignment_initial_' + img_name + '.obj'
-                        o3d.io.write_triangle_mesh(out_path_pred_transf, mesh_pred_transf)
-
-                        # img_name_part = img_name.split(img_name.split('_')[-1] + '_')[0]
-                        # out_path_gt = save_imgs_path + '/' + prefix + 'ground_truth_' + img_name_part + '.obj'
-                        # o3d.io.write_triangle_mesh(out_path_gt, mesh_gt)
-
-                        
-                        trans_init = transform
-                        threshold = 0.02        #  0.1  # 0.02
-
-                        n_points = 10000
-                        src = mesh_pred_new.sample_points_uniformly(number_of_points=n_points)
-                        dst = mesh_gt.sample_points_uniformly(number_of_points=n_points)
-
-                        # reg_p2p = o3d.pipelines.registration.registration_icp(src_down, dst_down, threshold, trans_init, o3d.pipelines.registration.TransformationEstimationPointToPoint(), o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000))
-                        reg_p2p = o3d.pipelines.registration.registration_icp(src, dst, threshold, trans_init, o3d.pipelines.registration.TransformationEstimationPointToPoint(), o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000))
-
-                        # mesh_pred_transf_refined = copy.deepcopy(mesh_pred_new).transform(reg_p2p.transformation)
-                        # out_path_pred_transf_refined =  save_imgs_path + '/' + prefix + 'alignment_final_' + img_name + '.obj'
-                        # o3d.io.write_triangle_mesh(out_path_pred_transf_refined, mesh_pred_transf_refined)
-
-
-                        aligned_mesh_final = trimesh.Trimesh(mesh_pred_new.vertices, mesh_pred_new.triangles, vertex_colors=[0, 255, 0])
-                        gt_mesh = trimesh.Trimesh(mesh_gt.vertices, mesh_gt.triangles, vertex_colors=[255, 0, 0])
-                        scene = trimesh.Scene([aligned_mesh_final, gt_mesh])
-                        out_path_alignment_with_gt =  save_imgs_path + '/' + prefix + 'alignment_with_gt_' + img_name + '.obj'
-
-                        scene.export(out_path_alignment_with_gt)
-                        '''
-
-                        # import pdb; pdb.set_trace()
-
-
                         # SMAL_KEYPOINT_NAMES_FOR_3D_EVAL     # 17 keypoints
                         # prepare target
                         target_keyp_isvalid = target_dict['keypoints_3d'][ind_img, :, 3].detach().cpu().numpy()
@@ -774,39 +591,6 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
                         pred_keypoints_raw = output_ref['vertices_smal'][ind_img, SMAL_KEYPOINT_INDICES_FOR_3D_EVAL, :].detach().cpu().numpy()
                         pred_keypoints = pred_keypoints_raw[keyp_to_use, :]
                         pred_pointcloud =  verts_remeshed[ind_img, :, :].detach().cpu().numpy()
-
-
-
-
-                        '''
-                        pred_keypoints_transf, pred_pointcloud_transf, procrustes_params = compute_similarity_transform(pred_keypoints, target_keypoints, num_joints=None, verts=pred_pointcloud)
-                        pa_error = np.sqrt(np.sum((target_keypoints - pred_keypoints_transf) ** 2, axis=1))
-                        error_procrustes = np.mean(pa_error)
-
-
-                        col_target = np.zeros((target_pointcloud.shape[0], 3), dtype=np.uint8)
-                        col_target[:, 0] = 255
-                        col_pred = np.zeros((pred_pointcloud_transf.shape[0], 3), dtype=np.uint8)
-                        col_pred[:, 1] = 255
-                        pc = trimesh.points.PointCloud(np.concatenate((target_pointcloud, pred_pointcloud_transf)), colors=np.concatenate((col_target, col_pred)))
-                        out_path_pc = save_imgs_path + '/' + prefix + 'pointclouds_aligned_' + img_name + '.obj'
-                        pc.export(out_path_pc)
-
-                        print(target_dict['mesh_path'][ind_img])
-                        print(error_procrustes)
-                        file_alignment_errors.write(target_dict['mesh_path'][ind_img] + '\n')
-                        file_alignment_errors.write('error: ' + str(error_procrustes) + ' \n')
-
-                        writer.writerow({'name': (target_dict['mesh_path'][ind_img]).split('/')[-1], 'error': str(error_procrustes)})
-
-                        # import pdb; pdb.set_trace()
-                        # alignment_dict = calculate_alignemnt_errors(output_ref['vertices_smal'][ind_img, :, :], target_dict['keypoints_3d'][ind_img, :, :], target_dict['pointcloud_points'][ind_img, :, :])
-                        # file_alignment_errors.write('error: ' + str(alignment_dict['error_procrustes']) + ' \n')
-                        '''
-
-
-
-
 
 
             if index == 0:
@@ -836,111 +620,12 @@ def do_visual_epoch(val_loader, model, device, data_info, flip=False, quiet=Fals
                     summary = summaries['normal']
                 else:
                     summary = summaries['ref']
-            
-            
-            # import pdb; pdb.set_trace()
-
 
             eval_save_visualizations_and_meshes(model, input, data_info, target_dict, test_name_list, vertices_smal, hg_keyp_norm, hg_keyp_scores, zz, betas, betas_limbs, pose_rotmat, trans, flength, pred_keyp, pred_silh, save_imgs_path, prefix, index, render_all=render_all)
-
-
             preds = eval_prepare_pck_and_iou(model, input, data_info, target_dict, test_name_list, vertices_smal, hg_keyp_norm, hg_keyp_scores, zz, betas, betas_limbs, pose_rotmat, trans, flength, pred_keyp, pred_silh, save_imgs_path, prefix, index, pck_thresh=None, skip_pck_and_iou=True)
             # add results for all images in this batch to lists
             curr_batch_size = pred_keyp.shape[0]
             eval_add_preds_to_summary(summary, preds, my_step, batch_size, curr_batch_size, skip_pck_and_iou=True)
-
-            # summary['vertices_smal'][my_step * batch_size:my_step * batch_size + curr_batch_size] = vertices_smal.detach().cpu().numpy()
-
-
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            '''
-            try: 
-                if test_name_list is not None:
-                    img_name = test_name_list[int(target_dict['index'][ind_img].cpu().detach().numpy())].replace('/', '_')
-                    img_name = img_name.split('.')[0]
-                else:
-                    img_name = str(index) + '_' + str(ind_img)
-                partial_results['img_name'] = img_name
-                visualizations = model.render_vis_nograd(vertices=output_reproj['vertices_smal'],
-                                                        focal_lengths=output_unnorm['flength'],
-                                                        color=0)    # 2)
-                # save image with predicted keypoints
-                pred_unp = (output['keypoints_norm'][ind_img, :, :] + 1.) / 2 * (data_info.image_size - 1)
-                pred_unp_maxval = output['keypoints_scores'][ind_img, :, :]
-                pred_unp_prep = torch.cat((pred_unp, pred_unp_maxval), 1)
-                inp_img = input[ind_img, :, :, :].detach().clone()
-                if save_imgs_path is not None:
-                    out_path = save_imgs_path + '/keypoints_pred_' + img_name + '.png'
-                    save_input_image_with_keypoints(inp_img, pred_unp_prep, out_path=out_path, threshold=0.1, print_scores=True, ratio_in_out=1.0)    # threshold=0.3
-                # save predicted 3d model
-                #   (1) front view
-                pred_tex = visualizations[ind_img, :, :, :].permute((1, 2, 0)).cpu().detach().numpy() / 256
-                pred_tex_max = np.max(pred_tex, axis=2)
-                partial_results['tex_pred'] = pred_tex
-                if save_imgs_path is not None:
-                    out_path = save_imgs_path + '/tex_pred_' + img_name + '.png'
-                    plt.imsave(out_path, pred_tex)
-                input_image = input[ind_img, :, :, :].detach().clone()
-                for t, m, s in zip(input_image, data_info.rgb_mean, data_info.rgb_stddev): t.add_(m)
-                input_image_np = input_image.detach().cpu().numpy().transpose(1, 2, 0) 
-                im_masked = cv2.addWeighted(input_image_np,0.2,pred_tex,0.8,0)
-                im_masked[pred_tex_max<0.01, :] = input_image_np[pred_tex_max<0.01, :]
-                partial_results['comp_pred'] = im_masked
-                if save_imgs_path is not None:
-                    out_path = save_imgs_path + '/comp_pred_' + img_name + '.png'
-                    plt.imsave(out_path, im_masked)
-                #   (2) side view
-                vertices_cent = output_reproj['vertices_smal'] - output_reproj['vertices_smal'].mean(dim=1)[:, None, :]
-                roll = np.pi / 2 * torch.ones(1).float().to(device)
-                pitch = np.pi / 2 * torch.ones(1).float().to(device)
-                tensor_0 = torch.zeros(1).float().to(device)
-                tensor_1 = torch.ones(1).float().to(device)
-                RX = torch.stack([torch.stack([tensor_1, tensor_0, tensor_0]), torch.stack([tensor_0, torch.cos(roll), -torch.sin(roll)]),torch.stack([tensor_0, torch.sin(roll), torch.cos(roll)])]).reshape(3,3)
-                RY = torch.stack([
-                    torch.stack([torch.cos(pitch), tensor_0, torch.sin(pitch)]),
-                    torch.stack([tensor_0, tensor_1, tensor_0]),
-                    torch.stack([-torch.sin(pitch), tensor_0, torch.cos(pitch)])]).reshape(3,3)
-                vertices_rot = (torch.matmul(RY, vertices_cent.reshape((-1, 3))[:, :, None])).reshape((batch_size, -1, 3))
-                vertices_rot[:, :, 2] = vertices_rot[:, :, 2] + torch.ones_like(vertices_rot[:, :, 2]) * 20     # 18     # *16
-                visualizations_rot = model.render_vis_nograd(vertices=vertices_rot,
-                                                        focal_lengths=output_unnorm['flength'],
-                                                        color=0)    # 2)
-                pred_tex = visualizations_rot[ind_img, :, :, :].permute((1, 2, 0)).cpu().detach().numpy() / 256
-                pred_tex_max = np.max(pred_tex, axis=2)
-                partial_results['rot_tex_pred'] = pred_tex
-                if save_imgs_path is not None:
-                    out_path = save_imgs_path + '/rot_tex_pred_' + img_name + '.png'
-                    plt.imsave(out_path, pred_tex)
-                render_all = True
-                if render_all:
-                    # save input image 
-                    inp_img = input[ind_img, :, :, :].detach().clone()
-                    if save_imgs_path is not None:
-                        out_path = save_imgs_path + '/image_' + img_name + '.png'
-                        save_input_image(inp_img, out_path)
-                    # save posed mesh
-                    V_posed = output_reproj['vertices_smal'][ind_img, :, :].detach().cpu().numpy()
-                    Faces = model.smal.f
-                    mesh_posed = trimesh.Trimesh(vertices=V_posed, faces=Faces, process=False,  maintain_order=True)
-                    partial_results['mesh_posed'] = mesh_posed
-                    if save_imgs_path is not None:
-                        mesh_posed.export(save_imgs_path + '/mesh_posed_' + img_name + '.obj')
-            except:
-                print('pass...')
-            all_results.append(partial_results)
-            '''
 
         my_step += 1
 

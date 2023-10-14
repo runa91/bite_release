@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from combined_model.helper import get_triangle_faces_from_pyvista_poly
 
 
-ROOT_OUT_PATH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data_remeshed/uniform_surface_sampling/'
-ROOT_PATH_MESH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/graphcmr/data/meshes/'
+ROOT_OUT_PATH = ...........
+ROOT_PATH_MESH = ...........
 
 n_points = 25000    # 6000     # 4000
 name = 'my_smpl_39dogsnorm_Jr_4_dog_remesh25000'        # 6000'     # 'my_smpl_39dogsnorm_Jr_4_dog_remesh4000'

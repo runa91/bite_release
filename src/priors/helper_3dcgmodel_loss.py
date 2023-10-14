@@ -2,8 +2,6 @@
 import pickle as pkl
 import torch
 
-# see also /is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/smal_data/new_dog_models/additional_info/debugging_only_info_scanned_toys_for_dog_model_creation.py
-
 
 def load_dog_betas_for_3dcgmodel_loss(data_path, smal_model_type):
     assert smal_model_type in {'barc', '39dogs_diffsize', '39dogs_norm', '39dogs_norm_newv2', '39dogs_norm_newv3'}
