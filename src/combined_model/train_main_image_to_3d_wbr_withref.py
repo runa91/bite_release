@@ -183,7 +183,7 @@ def do_validation_epoch(val_loader, model, loss_module, loss_module_ref, device,
 
     return_mesh_with_gt_groundplane = True
     if return_mesh_with_gt_groundplane:
-        root_data_path = os.path.join(os.path.dirname(__file__), '../', 'data')  
+        root_data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data')  
         remeshing_path = os.path.join(root_data_path, 'smal_data_remeshed', 'uniform_surface_sampling', 'my_smpl_39dogsnorm_Jr_4_dog_remesh4000_info.pkl')
         with open(remeshing_path, 'rb') as fp: 
             remeshing_dict = pkl.load(fp)
