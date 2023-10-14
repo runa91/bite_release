@@ -24,7 +24,7 @@ import networkx as nx
 
 
 ROOT_PATH_MESH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/graphcmr/data/meshes/'
-ROOT_PATH_ANNOT = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage3/'
+ROOT_PATH_ANNOT = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/'
 STAN_V12_ROOT_DIR = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra_V12/'
 IMG_V12_DIR = STAN_V12_ROOT_DIR + 'StanExtV12_Images/'		
 ROOT_OUT_PATH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/losses_for_vertex_wise_predictions/debugging_results/'

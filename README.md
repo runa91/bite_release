@@ -17,7 +17,7 @@
   * [Acknowledgments](#acknowledgments)
   * [Contact](#contact)
 
-
+Step 1: Click on the gif to the left
 
 ## Description
 
@@ -43,7 +43,7 @@ To install the remaining dependencies run the following command:
 
 ### Data Preparation
 
-All necessary data be downloaded [here](https://owncloud.tuebingen.mpg.de/index.php/s/Pw2yoWnAmwcDb9S). A folder named 'checkpoint' contains pretrained models, copy it to the main folder of this project. A folder named 'stanext_related_data.zip' contains information related to the dataset. Please extract the zip file and copy it to data/stanext_related_data.
+All necessary data be downloaded [here](https://owncloud.tuebingen.mpg.de/index.php/s/BpPWyzsmfycXdyj). A folder named 'checkpoint' contains pretrained models, copy it to the main folder of this project. Subfolders in a folder called 'data' should be copied to the corresponding location in your project folder.
 
 Download the Stanford Extra image dataset from https://github.com/benjiebob/StanfordExtra and store it in datasets/StanfordExtra_V12. 
 
@@ -51,13 +51,14 @@ Your folder structure should look as follows:
 ```bash
 folder
 ├── checkpoint
-│   ├── barc_complete
 │   └── ...
 ├── data
 │   ├── breed_data
+│   ├── graphcmr_data
 │   ├── smal_data
-│   ├── statistics
-│   └── stanext_related_data
+│   ├── smal_data_remeshed
+│   ├── stanext_related_data
+│   └── statistics
 ├── datasets
 │   ├── test_image_crops
 │   ├── StanfordExtra_V12
@@ -178,7 +179,7 @@ automatically terminate your rights under this [License](LICENSE).
 
 ## Contact
 
-The code of this repository was implemented by [Nadine Rüegg](mailto:nadine.rueegg@tuebingen.mpg.de).
+The code of this repository was implemented by [Nadine Rüegg](https://ps.is.mpg.de/person/nrueegg).
 
 For commercial licensing (and all related questions for business applications), please contact [ps-licensing@tue.mpg.de](mailto:ps-licensing@tue.mpg.de).
 

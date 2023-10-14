@@ -16,12 +16,12 @@ import pickle as pkl
 
 ROOT_path = '/home/nadine/Documents/PhD/icon_barc_project/AMT_ground_contact_studies/'
 ROOT_path_images = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra_V12/StanExtV12_Images/'
-ROOT_amt_image_list = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/amt_image_lists/'
-ROOT_OUT_PATH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/'
+ROOT_amt_image_list = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/amt_image_lists/'
+ROOT_OUT_PATH = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/'
 
 
-root_path_stage1 = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage1/'
-root_path_stage2 = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage2/'
+root_path_stage1 = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage1/'
+root_path_stage2 = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage2/'
 
 csv_file_stage1_pilot = root_path_stage1 + 'stage1_pilot_Batch_4841525_batch_results.csv'   
 csv_file_stage1_main = root_path_stage1 + 'stage1_main_stage1_Batch_4890079_batch_results.csv'   
@@ -36,7 +36,7 @@ val_amt_image_list = ROOT_amt_image_list + 'all_stanext_image_names_val.txt'
 experiment_name = 'stage_2b_image_paths'
 AMT_images_root_path = 'https://dogvisground.s3.eu-central-1.amazonaws.com/StanExtV12_Images/' # n02085620-Chihuahua/n02085620_10074.jpg'
 # out_folder = '/home/nadine/Documents/PhD/icon_barc_project/AMT_ground_contact_studies/stage_2b/stage2b_html_and_csv_files/'
-# out_folder_imgs = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/'
+# out_folder_imgs = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/'
 # csv_out_path_pilot = out_folder + experiment_name + '_pilot_bs22.csv'
 # csv_out_path_main = out_folder + experiment_name + '_main_bs22.csv'
 

@@ -90,8 +90,8 @@ class StanExtGC(data.Dataset):
             raise NotImplementedError
 
 
-        # path_gc_annots_overview = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl'
-        path_gc_annots_overview = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl'
+        # path_gc_annots_overview = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl'
+        path_gc_annots_overview = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl'
         with open(path_gc_annots_overview, 'rb') as f:
             self.gc_annots_overview = pkl.load(f)
         list_gc_labelled_images = list(self.gc_annots_overview.keys())
@@ -125,7 +125,7 @@ class StanExtGC(data.Dataset):
         self.trainvaltest_dict = dict(self.train_dict)
         for d in (init_test_dict, init_val_dict): self.trainvaltest_dict.update(d)
 
-        gc_annot_csv = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/my_gcannotations_qualification.csv'
+        gc_annot_csv = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/my_gcannotations_qualification.csv'
         gc_row_list = read_csv(gc_annot_csv)
 
         json_acceptable_string = (gc_row_list[0]['vertices']).replace("'", "\"")
@@ -368,7 +368,7 @@ class StanExtGC(data.Dataset):
             anipose_joints_0to24[:, 2] = anipose_joints_0to24_scores
         except:
             # REMARK: This happens sometimes!!! maybe once every 10th image..?
-            print('no anipose eye keypoints!')
+            # print('no anipose eye keypoints!')
             anipose_joints_0to24 = np.zeros((24, 3))
 
         joints = np.concatenate((np.asarray(data['joints'])[:20, :], anipose_joints_0to24[20:24, :]), axis=0)

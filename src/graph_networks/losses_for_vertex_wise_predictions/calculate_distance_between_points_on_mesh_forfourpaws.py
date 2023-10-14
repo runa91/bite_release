@@ -159,8 +159,8 @@ def main():
     ROOT_PATH_MESH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/graphcmr/data/meshes/'
     IMG_V12_DIR = '/ps/scratch/nrueegg/new_projects/Animals/data/dog_datasets/Stanford_Dogs_Dataset/StanfordExtra_V12/StanExtV12_Images/'		
     # ROOT_OUT_PATH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/src/graph_networks/losses_for_vertex_wise_predictions/debugging_results/'
-    ROOT_OUT_PATH = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/'
-    ROOT_PATH_ALL_VERT_DIST_TEMPLATE  = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/'
+    ROOT_OUT_PATH = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/'
+    ROOT_PATH_ALL_VERT_DIST_TEMPLATE  = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/'
 
     # load all vertex distances
     path_mesh = ROOT_PATH_MESH + 'mesh_downsampling_meshesmy_smpl_39dogsnorm_Jr_4_dog_template_downsampled0.obj'

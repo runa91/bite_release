@@ -94,24 +94,24 @@ class StanExtGC(data.Dataset):
         # import pdb; pdb.set_trace()
 
 
-        # path_gc_annots_overview = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl'
-        path_gc_annots_overview_stage3 = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl'
+        # path_gc_annots_overview = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl'
+        path_gc_annots_overview_stage3 = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl'
         with open(path_gc_annots_overview_stage3, 'rb') as f:
             self.gc_annots_overview_stage3 = pkl.load(f)                        # 2346
 
-        path_gc_annots_overview_stage2b_contact = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage2b/gc_annots_overview_stage2b_contact_complete.pkl'
+        path_gc_annots_overview_stage2b_contact = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage2b/gc_annots_overview_stage2b_contact_complete.pkl'
         with open(path_gc_annots_overview_stage2b_contact, 'rb') as f:
             self.gc_annots_overview_stage2b_contact = pkl.load(f)               # 832
         
-        path_gc_annots_overview_stage2b_nocontact = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stage2b/gc_annots_overview_stage2b_nocontact_complete.pkl'
+        path_gc_annots_overview_stage2b_nocontact = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage2b/gc_annots_overview_stage2b_nocontact_complete.pkl'
         with open(path_gc_annots_overview_stage2b_nocontact, 'rb') as f:
             self.gc_annots_overview_stage2b_nocontact = pkl.load(f)             # 32
 
-        path_gc_annots_overview_stages12_all4pawsincontact = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/gc_annots_overview_all4pawsincontact.pkl'
+        path_gc_annots_overview_stages12_all4pawsincontact = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/gc_annots_overview_all4pawsincontact.pkl'
         with open(path_gc_annots_overview_stages12_all4pawsincontact, 'rb') as f:
             self.gc_annots_overview_stages12_all4pawsincontact = pkl.load(f)    # 1, symbolic only
 
-        path_gc_annots_categories_stages12 = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/stages12together/gc_annots_categories_stages12_complete.pkl'
+        path_gc_annots_categories_stages12 = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stages12together/gc_annots_categories_stages12_complete.pkl'
         with open(path_gc_annots_categories_stages12, 'rb') as f:
             self.gc_annots_categories = pkl.load(f)                             # 12538
 
@@ -193,7 +193,7 @@ class StanExtGC(data.Dataset):
         self.trainvaltest_dict = dict(self.train_dict)
         for d in (init_test_dict, init_val_dict): self.trainvaltest_dict.update(d)
 
-        gc_annot_csv = '/is/cluster/work/nrueegg/icon_pifu_related/barc_for_bite/data/stanext_related_data/ground_contact_annotations/my_gcannotations_qualification.csv'
+        gc_annot_csv = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/my_gcannotations_qualification.csv'
         gc_row_list = read_csv(gc_annot_csv)
 
         json_acceptable_string = (gc_row_list[0]['vertices']).replace("'", "\"")
@@ -508,7 +508,7 @@ class StanExtGC(data.Dataset):
             anipose_joints_0to24[:, 2] = anipose_joints_0to24_scores
         except:
             # REMARK: This happens sometimes!!! maybe once every 10th image..?
-            print('no anipose eye keypoints!')
+            # print('no anipose eye keypoints!')
             anipose_joints_0to24 = np.zeros((24, 3))
 
         joints = np.concatenate((np.asarray(data['joints'])[:20, :], anipose_joints_0to24[20:24, :]), axis=0)

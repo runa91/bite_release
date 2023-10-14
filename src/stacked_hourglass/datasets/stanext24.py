@@ -256,7 +256,7 @@ class StanExt(data.Dataset):
             anipose_joints_0to24[:, 2] = anipose_joints_0to24_scores
         except:
             # REMARK: This happens sometimes!!! maybe once every 10th image..?
-            print('no anipose eye keypoints!')
+            # print('no anipose eye keypoints!')
             anipose_joints_0to24 = np.zeros((24, 3))
 
         joints = np.concatenate((np.asarray(data['joints'])[:20, :], anipose_joints_0to24[20:24, :]), axis=0)
