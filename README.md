@@ -174,8 +174,6 @@ you do not agree with these [terms and conditions](LICENSE), you must not downlo
 use the Data & Software. Any infringement of the terms of this agreement will
 automatically terminate your rights under this [License](LICENSE).
 
-## Acknowledgments
-
 
 ## Note
 In addition to the code for our CVPR paper which may be run using the commands within the "Usage" section, you can find different functionalities which did not end up in the final version of the project (body part segmentation for example). However, I have in the meanwhile left University and while you are free to use those code snipplets, I will not be able to provide support.
