@@ -91,7 +91,7 @@ In order to run our pretrained model on new sample images, prepare image crops a
 
 Demo on all images within the folder datasets/test_image_crops:
 ```shell
-python scripts/ttopt_fromref_v7_sketchfab.py \
+python scripts/full_inference_including_ttopt.py \
 --workers 12 \
 --config refinement_cfg_test_withvertexwisegc_csaddnonflat_crops.yaml \
 --model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
@@ -100,7 +100,7 @@ python scripts/ttopt_fromref_v7_sketchfab.py \
 
 Demo on the Stanford Extra dataset:
 ```shell
-python scripts/ttopt_fromref_v7_sketchfab.py \
+python scripts/full_inference_including_ttopt.py \
 --workers 12 \
 --config refinement_cfg_test_withvertexwisegc_csaddnonflat.yaml \
 --model-file-complete cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0/checkpoint.pth.tar \
@@ -121,7 +121,7 @@ python scripts/train.py \
 --model-file-3d barc_3d_pret/checkpoint.pth.tar
 ```
 
-Train Refinement Network (= BITE):
+Train refinement network (full network = BITE):
 ```shell
 python scripts/train_withref.py \
 --checkpoint debug_cvpr23_dm39dnnv3barcv2b_refwithgcpervertisflat0morestanding0 \
@@ -144,7 +144,7 @@ If you find this Model & Software useful in your research we would kindly ask yo
 @inproceedings{rueegg2023bite,
     title = {BITE: Beyond priors for Improved Three-D dog pose Estimation},
     author = {Rueegg, Nadine and Tripathi, Shashank and Schindler, Konrad and Black, Michael J. and Zuffi, Silvia},
-    booktitle = {under review},
+    booktitle = {Proceedings IEEE Conf. on Computer Vision and Pattern Recognition (CVPR)},
     year = {2023}
 }
 ```
