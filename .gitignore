@@ -22,30 +22,12 @@ src/evaluation/*.ply
 src/graph_networks/losses_for_vertex_wise_predictions/debugging_results
 /overview_bite_cvpr
 
-#/data/dog_toys_and_unity_models
-#/data/smal_data/new_dog_models/additional_info
-#!/data/smal_data/new_dog_models/additional_info/dog39_registrations_with_breeds.pdf
-#/data/smal_data/smalr_uv_map
-#/data/smal_data/textures_from_blender
-#/data/stanext_related_data/animalpose_hg8_v0_results_on_StanExt
-#/data/stanext_related_data/animalpose_hg8_v1_results_on_StanExt
-#!data/stanext_related_data/ground_contact_annotations/all_vertex_distances.npy
-#data/stanext_related_data/ground_contact_annotations/stage3/vis
-#data/stanext_related_data/ground_contact_annotations/stage2b/vis
-#data/stanext_related_data/ground_contact_annotations/stage3/vertex_distances_gc_nongc
-#data/stanext_related_data/ground_contact_annotations/stage2b/vertex_distances_gc_nongc
-#data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl
-#data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl
-#data/smal_data_remeshed/uniform_surface_sampling
-#data/texture_related/
-#/data/*
 src/test_time_optimization/texture/debug
 src/test_time_optimization/texture/debug_v2
 
 # files that are too big
 data/stanext_related_data/ground_contact_annotations/stage3/gc_annots_overview_stage3complete_withtraintestval.pkl
 data/stanext_related_data/ground_contact_annotations/all_vertex_distances.npy
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
