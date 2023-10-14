@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 from torch.nn.functional import mse_loss
+import torch.nn.functional as F
 # for NEW: losses when calculated on keypoint locations
 # see https://kornia.readthedocs.io/en/latest/_modules/kornia/geometry/subpix/dsnt.html
 # from kornia.geometry import dsnt            # old kornia version  
@@ -40,11 +41,6 @@ class JointsMSELoss(nn.Module):
         return joints_mse_loss_orig(output, target, target_weight)
 
 
-
-
-# ----- NEW: losses when calculated on keypoint locations instead of keypoint heatmaps -----
-
-
 def joints_mse_loss_onKPloc(output, target, meta, target_weight=None):
     # debugging:
     # for old kornia version
@@ -60,9 +56,6 @@ def joints_mse_loss_onKPloc(output, target, meta, target_weight=None):
     # output_kp = dsnt.spatial_softargmax_2d(target_norm, normalized_coordinates=False) + 1 
 
     # normalize target heatmap
-    '''target_sum = target.sum(axis=3).sum(axis=2)[:, :, None, None]
-    target_sum[target_sum==0] = 1e-2
-    target_norm = target / target_sum'''
     target_norm = target        # now we have normalized heatmaps
 
     # normalize predictions -> from logits to probability distribution
@@ -80,38 +73,9 @@ def joints_mse_loss_onKPloc(output, target, meta, target_weight=None):
     # dist_loss = (((output_kp_resh - target_kp_resh)**2).sum(axis=1).sqrt()*weights_resh)[weights_resh>0].sum() / min(weights_resh[weights_resh>0].sum(), 1e-5)
     dist_loss = (((output_kp_resh - target_kp_resh)[weights_resh>0]**2).sum(axis=1).sqrt()*weights_resh[weights_resh>0]).sum() / max(weights_resh[weights_resh>0].sum(), 1e-5)
 
-
-    # return heatmap_loss*100 # + 0.0001*dist_loss 
-
-    # import pdb; pdb.set_trace()
-
-
-    '''import matplotlib as mpl
-    mpl.use('Agg')
-    import matplotlib.pyplot as plt
-
-    img_np = output_norm[0, :, :, :].detach().cpu().numpy().transpose(1, 2, 0)[:, :, :3] 
-    img_np = img_np * 255./ img_np.max()
-    # plot image
-    plt.imshow(img_np)     
-    plt.savefig('./debugging_output/test_output.png')
-    plt.close()
-
-    img_np = target_norm[0, :, :, :].detach().cpu().numpy().transpose(1, 2, 0)[:, :, :3] 
-    img_np = img_np * 255./ img_np.max()
-    # plot image
-    plt.imshow(img_np)     
-    plt.savefig('./debugging_output/test_gt.png')
-    plt.close()'''
-
-    # print(heatmap_loss*100)
-    # print(dist_loss * 1e-4)
-
     # distlossonly: return dist_loss * 1e-4 
     # both: return dist_loss * 1e-4 + heatmap_loss*100 
     return dist_loss * 1e-4 + heatmap_loss*100 
-
-
 
 
 class JointsMSELoss_onKPloc(nn.Module):
@@ -124,17 +88,6 @@ class JointsMSELoss_onKPloc(nn.Module):
             target_weight = None
         return joints_mse_loss_onKPloc(output, target, meta, target_weight)
 
-
-
-
-
-# ----- NEW: lsegmentation loss -----
-
-import torch.nn.functional as F
-
-'''def resize2d(img, size):
-    return (F.adaptive_avg_pool2d(Variable(img,volatile=True), size)).data
-    # F.adaptive_avg_pool2d(meta['silh'], (64,64))).data'''
 
 def segmentation_loss(output, meta):
     # output: (6, 2, 64, 64)

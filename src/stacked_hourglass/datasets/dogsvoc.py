@@ -21,10 +21,6 @@ from pycocotools.mask import decode as decode_RLE
 
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# import stacked_hourglass.res
-# from stacked_hourglass.datasets.common import DataInfo
-# from configs.data_info import COMPLETE_DATA_INFO
-# from configs.anipose_data_info import COMPLETE_DATA_INFO_24
 from src.configs.data_info import COMPLETE_DATA_INFO_24
 from src.stacked_hourglass.utils.imutils import load_image, draw_labelmap, draw_multiple_labelmaps
 from src.stacked_hourglass.utils.misc import to_torch
@@ -341,8 +337,8 @@ class DogsVOC(data.Dataset):
 
     def __len__(self):
         if self.is_train:
-            return len(self.train_set)  # len(self.train_list)
+            return len(self.train_set)  
         else:
-            return len(self.val_set)   # len(self.valid_list)
+            return len(self.val_set)
 
 

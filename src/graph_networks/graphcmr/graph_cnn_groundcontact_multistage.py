@@ -40,21 +40,6 @@ class GraphCNNMS(nn.Module):
         print("Number of downsampling layer: {}".format(self.num_layers))
         self.num_downsample = num_downsample
         self.n_resnet_out = n_resnet_out
-        
-        
-        '''
-        self.use_pret_res = use_pret_res
-        # self.resnet = resnet50(pretrained=True)
-        #   -> within the GraphCMR network they ignore the last fully connected layer
-        # replace the first layer
-        self.resnet = models.resnet34(pretrained=self.use_pret_res)  
-        if (self.use_pret_res) and (n_resnet_in == 3):
-            print('use full pretrained resnet including first layer!')
-        else:
-            self.resnet.conv1 = nn.Conv2d(n_resnet_in, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
-        # replace the last layer
-        self.resnet.fc = nn.Linear(512, n_resnet_out) 
-        '''
 
         self.lin1 = GraphLinear(3 + n_resnet_out, 2 * num_channels)
         self.res1 = GraphResBlock(2 * num_channels, num_channels, self.A[0])
@@ -74,15 +59,6 @@ class GraphCNNMS(nn.Module):
                                    nn.GroupNorm(32 // 8, 32),
                                    nn.ReLU(inplace=True),
                                    GraphLinear(32, self.n_out_gc))
-
-        '''
-        self.n_out_flatground = 2
-        self.flat_ground = nn.Sequential(nn.GroupNorm(current_channels // 8, current_channels),
-                                      nn.ReLU(inplace=True),
-                                      GraphLinear(current_channels, 1),
-                                      nn.ReLU(inplace=True),
-                                      nn.Linear(A.shape[0], self.n_out_flatground))
-        '''
 
         self.encoder = nn.Sequential(*encode_layers)
         self.decoder = nn.Sequential(*decode_layers)
@@ -137,38 +113,4 @@ class GraphCNNMS(nn.Module):
 
         ground_contact = self.gc(x)
 
-        '''
-        ground_flatness = self.flat_ground(x).view(batch_size, self.n_out_flatground)    # (bs, 1)
-        '''
-
         return ground_contact, output_list       # , ground_flatness
-
-
-
-
-
-
-
-# how to use it:
-#
-# from src.graph_networks.graphcmr.utils_mesh import Mesh 
-#
-# create Mesh object
-# self.mesh = Mesh()
-# self.faces = self.mesh.faces.to(self.device)
-#
-# create GraphCNN
-# self.graph_cnn = GraphCNN(self.mesh.adjmat,
-#                     self.mesh.ref_vertices.t(),
-#                     num_channels=self.options.num_channels,
-#                     num_layers=self.options.num_layers
-#                     ).to(self.device)
-# ------------
-#
-# Feed image in the GraphCNN
-# Returns subsampled mesh and camera parameters
-# pred_vertices_sub, pred_camera = self.graph_cnn(images)
-# 
-# Upsample mesh in the original size
-# pred_vertices = self.mesh.upsample(pred_vertices_sub.transpose(1,2))
-# 

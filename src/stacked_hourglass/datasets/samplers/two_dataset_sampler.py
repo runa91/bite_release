@@ -66,20 +66,12 @@ class TwoDatasetSampler(Sampler):
         dataset0 = dataset0[0:self.n_batches*self.batch_size_half]
         dataset1 = dataset1[0:self.n_batches*self.batch_size_half]
 
-        # import pdb; pdb.set_trace()
-
         for ind_batch in range(self.n_batches):
             d0 = dataset0[ind_batch*self.batch_size_half:(ind_batch+1)*self.batch_size_half]
             d1 = dataset1[ind_batch*self.batch_size_half:(ind_batch+1)*self.batch_size_half]
 
             batch = list(d0) + list(d1)
-            # print(len(batch))
-
             yield batch
-
-
-
-
 
 
 

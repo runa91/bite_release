@@ -43,13 +43,6 @@ def do_training_step(model, optimiser, input, target, meta, data_info, target_we
         loss_seg = sum(segmentation_loss(o, meta) for o in out_dict['out_list_seg'])
         loss_seg_big = segmentation_loss(out_dict['seg_final'], meta)
 
-        # NEW for body part segmentation
-        '''
-        ind_gt = 6
-        out_path_gt_seg = ......
-        save_image_with_part_segmentation_from_gt_annotation(meta['body_part_matrix'].detach().cpu().numpy(), out_path_gt_seg, ind_gt)
-        '''
-
         # for the second stage where we add a dataset with body part segmentations
         #   and not just fake -1 labels, we calculate body part segmentation loss as well
         # if all body part labels are -1, we ignore this loss calculation
@@ -78,17 +71,12 @@ def do_training_step(model, optimiser, input, target, meta, data_info, target_we
                     loss_partseg.append(criterion_ce(tbp_out, tbp_target))
                 else:
                     loss_partseg.append(criterion_ce(tbp_out, tbp_target))
-            # print(loss_seg_big)
-            # print(loss_partseg)
 
             # loss = loss_kp + loss_seg*0.01 + loss_seg_big*0.1       # orig     # 0.001       # 0.01
             loss = loss_kp + loss_seg*0.001 + loss_seg_big*0.01 + 0.01*(loss_partseg[0] + loss_partseg[1] + loss_partseg[2])
 
         else:
             loss = loss_kp + loss_seg*0.01 + loss_seg_big*0.1
-
-
-
 
         # Backward pass and parameter update.
         optimiser.zero_grad()
@@ -213,9 +201,6 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
         # NEW for visualization: (and redundant, but for visualization)
         if (save_imgs_path is not None) or (save_pkl_path is not None):
             preds_unprocessed, preds_unprocessed_norm, preds_unprocessed_maxval = get_preds_soft(heatmaps, return_maxval=True, norm_and_unnorm_coords=True)
-
-            # import pdb; pdb.set_trace()
-
 
         ind = 0
         for example_index, pose in zip(meta['index'], preds):

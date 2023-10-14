@@ -90,10 +90,6 @@ class StanExtGC(data.Dataset):
         else:
             raise NotImplementedError
 
-
-        # import pdb; pdb.set_trace()
-
-
         # path_gc_annots_overview = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_first699.pkl'
         path_gc_annots_overview_stage3 = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/stage3/gc_annots_overview_stage3complete.pkl'
         with open(path_gc_annots_overview_stage3, 'rb') as f:
@@ -129,33 +125,10 @@ class StanExtGC(data.Dataset):
                 if (value['is_vis'] in [True, None]) and (value['is_flat'] in [True, None]) and (not value['pose'] == 'cantsee'):
                     train_name_list_gc.append(name)
 
-        # import pdb; pdb.set_trace()
-
-
-
-
-
-        '''self.gc_annots_overview = self.gc_annots_overview_stage3
-        list_gc_labelled_images = list(self.gc_annots_overview.keys())
-
-        test_name_list_gc = []
-        for name in self.test_name_list:
-            if name.split('.')[0] in list_gc_labelled_images:
-                test_name_list_gc.append(name)
-
-        train_name_list_gc = []
-        for name in self.train_name_list:
-            if name.split('.')[0] in list_gc_labelled_images:
-                train_name_list_gc.append(name)'''
-
         random.seed(4)
         random.shuffle(test_name_list_gc)
 
-
-
-
         # new: add images with non-flat ground in the end
-        # import pdb; pdb.set_trace()
         if self.add_nonflat:
             self.train_name_list_nonflat = []
             for name in self.train_name_list:
@@ -170,63 +143,15 @@ class StanExtGC(data.Dataset):
                     if (value['is_vis'] in [True, None]) and (value['is_flat'] in [False]):
                         self.test_name_list_nonflat.append(name)
 
-
-
-
         self.test_name_list = test_name_list_gc
         self.train_name_list = train_name_list_gc
 
-
-
-
-
-        '''
-        already_labelled  = ['n02093991-Irish_terrier/n02093991_2874.jpg',
-                            'n02093754-Border_terrier/n02093754_1062.jpg',
-                            'n02092339-Weimaraner/n02092339_1672.jpg',
-                            'n02096177-cairn/n02096177_4916.jpg',
-                            'n02110185-Siberian_husky/n02110185_725.jpg',
-                            'n02110806-basenji/n02110806_761.jpg',
-                            'n02094433-Yorkshire_terrier/n02094433_2474.jpg',
-                            'n02097474-Tibetan_terrier/n02097474_8796.jpg',
-                            'n02099601-golden_retriever/n02099601_2495.jpg']
-        self.trainvaltest_dict = dict(self.train_dict)
-        for d in (init_test_dict, init_val_dict): self.trainvaltest_dict.update(d)
-
-        gc_annot_csv = STANEXT_RELATED_DATA_ROOT_DIR + '/ground_contact_annotations/my_gcannotations_qualification.csv'
-        gc_row_list = read_csv(gc_annot_csv)
-
-        json_acceptable_string = (gc_row_list[0]['vertices']).replace("'", "\"")
-        self.gc_dict = json.loads(json_acceptable_string)
-
-        self.train_name_list = already_labelled
-        self.test_name_list = already_labelled
-        '''
-
-        
         # stanext breed dict (contains for each name a stanext specific index)
         breed_json_path = os.path.join(STANEXT_RELATED_DATA_ROOT_DIR, 'StanExt_breed_dict_v2.json')
         self.breed_dict = self.get_breed_dict(breed_json_path, create_new_breed_json=False) 
 
         # load smal symmetry info
         self.sym_ids_dict = get_symmetry_indices()
-        
-        '''
-        self.train_name_list = sorted(self.train_name_list)
-        self.test_name_list = sorted(self.test_name_list)
-        random.seed(4)
-        random.shuffle(self.train_name_list)
-        random.shuffle(self.test_name_list)
-        if shorten_dataset_to is not None:
-            # sometimes it is useful to have a smaller set (validation speed, debugging)
-            self.train_name_list = self.train_name_list[0 : min(len(self.train_name_list), shorten_dataset_to)]
-            self.test_name_list = self.test_name_list[0 : min(len(self.test_name_list), shorten_dataset_to)]
-            # special case for debugging: 12 similar images
-            if shorten_dataset_to == 12:
-                my_sample = self.test_name_list[2]
-                for ind in range(0, 12):
-                    self.test_name_list[ind] = my_sample
-        '''
         print('len(dataset): ' + str(self.__len__()))
 
         # add results for eyes, whithers and throat as obtained through anipose -> they are used
@@ -293,7 +218,6 @@ class StanExtGC(data.Dataset):
 
     def __getitem__(self, index):
 
-        
         if self.is_train:
             train_val_test_Prefix = 'train'
             if self.add_nonflat and index >= len(self.train_name_list):
@@ -313,27 +237,6 @@ class StanExtGC(data.Dataset):
                 gc_isflat = 1
             data = self.test_dict[name]
         img_path = os.path.join(self.img_folder, data['img_path'])
-
-
-        '''
-        # for debugging only
-        train_val_test_Prefix = 'train'
-        name = self.train_name_list[index]
-        data = self.trainvaltest_dict[name]
-        img_path = os.path.join(self.img_folder, data['img_path'])
-
-        if self.dataset_mode=='complete_with_gc':
-            n_verts_smal = 3889
-
-            gc_info_raw = self.gc_dict['bite/' + name]      # a list with all vertex numbers that are in ground contact
-            gc_info = []
-            gc_info_tch = torch.zeros((n_verts_smal))
-            for ind_v in gc_info_raw:
-                if ind_v < n_verts_smal:
-                    gc_info.append(ind_v)
-                    gc_info_tch[ind_v] = 1
-            gc_info_available = True
-        '''
 
         # array of shape (n_verts_smal, 3) with [first: no-contact=0 contact=1     second: index of vertex     third: dist]
         n_verts_smal = 3889
@@ -474,12 +377,7 @@ class StanExtGC(data.Dataset):
                 tpts[i, 0:2] = to_torch(transform(tpts[i, 0:2]+1, c, s, [self.out_res, self.out_res], rot=r, as_int=False)) - 1
                 target[i], vis = draw_labelmap(target[i], tpts[i], self.sigma, type=self.label_type)
                 target_weight[i, 0] *= vis
-        # NEW:
-        '''target_new, vis_new = draw_multiple_labelmaps((self.out_res, self.out_res), tpts[:, :2]-1, self.sigma, type=self.label_type)
-        target_weight_new = tpts[:, 2].clone().view(nparts, 1) * vis_new
-        target_new[(target_weight_new==0).reshape((-1)), :, :] = 0'''
-
-                        
+  
         # --- Meta info
         this_breed = self.breed_dict[name.split('/')[0]]        # 120
         # add information about location within breed similarity matrix

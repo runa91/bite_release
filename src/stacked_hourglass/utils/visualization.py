@@ -28,6 +28,7 @@ def get_img_from_fig(fig, dpi=180):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return img
 
+
 def save_input_image_with_keypoints(img, tpts, out_path='./test_input.png', colors=COLORS, rgb_mean=RGB_MEAN, rgb_std=RGB_STD, ratio_in_out=4., threshold=0.3, print_scores=False):
     """ 
     img has shape (3, 256, 256) and is a torch tensor
@@ -62,14 +63,13 @@ def save_input_image_with_keypoints(img, tpts, out_path='./test_input.png', colo
     return
 
 
-
 def save_input_image(img, out_path, colors=COLORS, rgb_mean=RGB_MEAN, rgb_std=RGB_STD):
     for t, m, s in zip(img, rgb_mean, rgb_std): t.add_(m)       # inverse to transforms.color_normalize()
     img_np = img.detach().cpu().numpy().transpose(1, 2, 0) 
     plt.imsave(out_path, img_np)
     return
 
-######################################################################
+
 def get_bodypart_colors():
     # body colors
     n_body = 8

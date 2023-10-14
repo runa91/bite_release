@@ -139,8 +139,6 @@ class StanExt(data.Dataset):
         return breed_dict
 
 
-
-
     def __getitem__(self, index):
 
         if self.is_train:
@@ -152,8 +150,6 @@ class StanExt(data.Dataset):
             name = self.test_name_list[index]
             data = self.test_dict[name]
 
-
-        
         sf = self.scale_factor
         rf = self.rot_factor
 

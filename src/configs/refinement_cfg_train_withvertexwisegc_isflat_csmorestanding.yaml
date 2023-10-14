@@ -6,7 +6,7 @@ paths:
 
 smal:
   SMAL_MODEL_TYPE: '39dogs_norm_newv3'   
-  SMAL_KEYP_CONF: 'olive'  '
+  SMAL_KEYP_CONF: 'olive' 
 
 optim:
   LR: 5e-5    

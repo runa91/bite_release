@@ -22,32 +22,6 @@ from configs.SMAL_configs import EVAL_KEYPOINTS, KEYPOINT_GROUPS
 
 # GOAL: have all the functions from the validation and visual epoch together
 
-
-'''
-save_imgs_path = ...
-prefix = ''
-input   # this is the image
-data_info
-target_dict
-render_all
-model
-
-
-vertices_smal = output_reproj['vertices_smal']
-flength = output_unnorm['flength']
-hg_keyp_norm = output['keypoints_norm']
-hg_keyp_scores = output['keypoints_scores']
-betas = output_reproj['betas']
-betas_limbs = output_reproj['betas_limbs']
-zz = output_reproj['z']
-pose_rotmat = output_unnorm['pose_rotmat']
-trans = output_unnorm['trans']
-pred_keyp = output_reproj['keyp_2d']
-pred_silh = output_reproj['silh']
-'''
-
-#################################################
-
 def eval_save_visualizations_and_meshes(model, input, data_info, target_dict, test_name_list, vertices_smal, hg_keyp_norm, hg_keyp_scores, zz, betas, betas_limbs, pose_rotmat, trans, flength, pred_keyp, pred_silh, save_imgs_path, prefix, index, render_all=False):
     device = input.device
     curr_batch_size = input.shape[0]
@@ -116,7 +90,6 @@ def eval_save_visualizations_and_meshes(model, input, data_info, target_dict, te
         except: 
             print('dont save an image')
 
-############
 
 def eval_prepare_pck_and_iou(model, input, data_info, target_dict, test_name_list, vertices_smal, hg_keyp_norm, hg_keyp_scores, zz, betas, betas_limbs, pose_rotmat, trans, flength, pred_keyp, pred_silh, save_imgs_path, prefix, index, pck_thresh, progress=None, skip_pck_and_iou=False):
     preds = {}

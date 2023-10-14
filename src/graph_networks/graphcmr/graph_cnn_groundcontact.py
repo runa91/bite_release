@@ -34,7 +34,6 @@ class GraphCNN(nn.Module):
         # replace the last layer
         self.resnet.fc = nn.Linear(512, n_resnet_out) 
 
-
         layers = [GraphLinear(3 + n_resnet_out, 2 * num_channels)]  # [GraphLinear(3 + 2048, 2 * num_channels)]
         layers.append(GraphResBlock(2 * num_channels, num_channels, A))
         for i in range(num_layers):
@@ -72,30 +71,3 @@ class GraphCNN(nn.Module):
         ground_contact = self.gc(x)      # (bs, 2, 973)
         ground_flatness = self.flat_ground(x).view(batch_size, self.n_out_flatground)    # (bs, 1)
         return ground_contact, ground_flatness
-
-
-
-
-# how to use it:
-#
-# from src.graph_networks.graphcmr.utils_mesh import Mesh 
-#
-# create Mesh object
-# self.mesh = Mesh()
-# self.faces = self.mesh.faces.to(self.device)
-#
-# create GraphCNN
-# self.graph_cnn = GraphCNN(self.mesh.adjmat,
-#                     self.mesh.ref_vertices.t(),
-#                     num_channels=self.options.num_channels,
-#                     num_layers=self.options.num_layers
-#                     ).to(self.device)
-# ------------
-#
-# Feed image in the GraphCNN
-# Returns subsampled mesh and camera parameters
-# pred_vertices_sub, pred_camera = self.graph_cnn(images)
-# 
-# Upsample mesh in the original size
-# pred_vertices = self.mesh.upsample(pred_vertices_sub.transpose(1,2))
-# 

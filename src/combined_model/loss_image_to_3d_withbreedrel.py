@@ -7,12 +7,9 @@ import pickle as pkl
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
-# from priors.pose_prior_35 import Prior
-# from priors.tiger_pose_prior.tiger_pose_prior import GaussianMixturePrior
 from priors.normalizing_flow_prior.normalizing_flow_prior import NormalizingFlowPrior
 from priors.shape_prior import ShapePrior
 from lifting_to_3d.utils.geometry_utils import rot6d_to_rotmat, batch_rot2aa
-# from configs.SMAL_configs import SMAL_MODEL_DATA_PATH, UNITY_SMAL_SHAPE_PRIOR_DOGS, SMAL_MODEL_TYPE  
 from configs.SMAL_configs import SMAL_MODEL_CONFIG
 
 from priors.helper_3dcgmodel_loss import load_dog_betas_for_3dcgmodel_loss

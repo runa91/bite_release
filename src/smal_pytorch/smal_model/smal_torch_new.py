@@ -238,9 +238,6 @@ class SMAL(nn.Module):
         if vert_off_compact is None:
             vertex_offsets = torch.zeros_like(self.v_template)
         else:
-            ##########################################################
-            # bs = 1
-            # vert_off_compact = torch.zeros((bs, 2*self.n_center + 3*self.n_left), device=vert_off_compact.device, dtype=vert_off_compact.dtype)
             if type(vert_off_compact) is dict:
                 zero_vec = torch.zeros((vert_off_compact['c0'].shape[0], self.n_center)).to(device)
                 half_vertex_offsets_center = torch.stack((vert_off_compact['c0'], \
@@ -367,7 +364,6 @@ class SMAL(nn.Module):
             verts[:, None, 20],     # withers
             ], dim = 1) 
 
-
         if keyp_conf == 'blue' or keyp_conf == 'dict':
             # Generate keypoints
             nLandmarks = KEY_VIDS.shape[0]      # 24
@@ -403,9 +399,6 @@ class SMAL(nn.Module):
                 return verts, relevant_joints, Rs        # , v_shaped
             else:
                 return relevant_joints
-
-
-
 
 
     def get_joints_from_verts(self, verts, keyp_conf='red'):

@@ -243,13 +243,6 @@ def setup_deformation_transfer(source, target, use_normals=False):
             # Closest surface point a vertex
             coeffs_v[3 * i + n_id - 4] = 1.0
 
-    #    if use_normals:
-    #        A = np.vstack((vn[nearest_f])).T
-    #        coeffs_n[3 * i:3 * i + 3] = np.linalg.lstsq(A, dist_vec)[0]
-
-    #coeffs = np.hstack((coeffs_v, coeffs_n))
-    #rows = np.hstack((rows, rows))
-    #cols = np.hstack((cols, source.v.shape[0] + cols))
     matrix = sp.csc_matrix((coeffs_v, (rows, cols)), shape=(target.v.shape[0], source.v.shape[0]))
     return matrix
 

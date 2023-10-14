@@ -17,7 +17,6 @@ import trimesh
 import networkx as nx
 
 
-
 ROOT_PATH_MESH = ......
 ROOT_OUT_PATH = .....
 
@@ -26,10 +25,7 @@ path_mesh = ROOT_PATH_MESH + 'mesh_downsampling_meshesmy_smpl_39dogsnorm_Jr_4_do
 
 import pdb; pdb.set_trace()
 
-
-
 my_mesh = trimesh.load_mesh(path_mesh, process=False,  maintain_order=True)
-
 
 # edges without duplication
 edges = my_mesh.edges_unique

@@ -31,9 +31,6 @@ class LaplacianCTF(torch.nn.Module):
         return loss, None
 
 
-
-
-# 
 # read the adjacency matrix, which will used in the Laplacian regularizer
 # data = np.load('./data/mesh_down_sampling_4.npz', encoding='latin1', allow_pickle=True)
 # adjmat = data['A'][0]

@@ -70,16 +70,6 @@ class GraphCNNMS(nn.Module):
                                    nn.GroupNorm(32 // 8, 32),
                                    nn.ReLU(inplace=True),
                                    GraphLinear(32, self.n_out_gc))
-
-        '''
-        self.n_out_flatground = 2
-        self.flat_ground = nn.Sequential(nn.GroupNorm(current_channels // 8, current_channels),
-                                      nn.ReLU(inplace=True),
-                                      GraphLinear(current_channels, 1),
-                                      nn.ReLU(inplace=True),
-                                      nn.Linear(A.shape[0], self.n_out_flatground))
-        '''
-
         self.encoder = nn.Sequential(*encode_layers)
         self.decoder = nn.Sequential(*decode_layers)
         self.mesh = mesh
@@ -132,10 +122,6 @@ class GraphCNNMS(nn.Module):
                 x = torch.cat([x, x_[self.num_layers-i-1]], dim=1) # skip connection between encoder and decoder
 
         ground_contact = self.gc(x)
-
-        '''
-        ground_flatness = self.flat_ground(x).view(batch_size, self.n_out_flatground)    # (bs, 1)
-        '''
 
         return ground_contact, output_list       # , ground_flatness
 

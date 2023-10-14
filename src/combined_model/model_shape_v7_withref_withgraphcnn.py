@@ -346,7 +346,6 @@ class ModelRefinement(nn.Module):
                     'betas_limbs': in_betas_limbs}
         results = {}
         for element in self.output_info:
-            # import pdb; pdb.set_trace()
 
             linear_model = self.output_info_linear_models[element['linear_model_index']]
             y = torch.cat((y_comb, in_dict[element['name']].reshape((-1, element['n']))), axis=1)
@@ -666,9 +665,7 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
                             in_pose_3x3=pred_pose.detach(), in_trans_notnorm=output['trans'].detach(), in_cam_notnorm=output['flength'].detach(), in_betas=pred_betas.detach(), in_betas_limbs=pred_betas_limbs.detach())
         # a better alternative would be to submit pred_pose_reshx33
 
-
-
-        # nothing changes for betas or shapedirs or z       ##################### should probably not be detached in the end
+        # nothing changes for betas or shapedirs or z  (should probably not be detached in the end)
         if self.shaperef_type == 'inexistent':
             if self.ref_detach_shape:
                 output_ref['betas'] = pred_betas.detach()
@@ -685,7 +682,6 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
             assert ('betas_limbs' in output_ref.keys())
             output_ref['shapedirs'] = shapedirs_sel     
 
-
         # we denormalize flength and trans, but pose is handled differently
         if self.fix_flength:
             output_ref['flength_notnorm'] = torch.zeros_like(output['flength'])
@@ -697,11 +693,6 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
             ref_pred_flength[ref_pred_flength_orig<=0] = norm_dict['flength_mean'][None, :]
         ref_pred_trans = output_ref['trans_notnorm'] * norm_dict['trans_std'][None, :] + norm_dict['trans_mean'][None, :]    # (bs, 3)
 
-
-
-
-        # ref_pred_pose_rot6d = output_ref['pose']
-        # ref_pred_pose_reshx33 = rot6d_to_rotmat(output_ref['pose'].reshape((-1, 6))).reshape((batch_size, -1, 3, 3))
         ref_pred_pose_reshx33 = output_ref['pose_rotmat'].reshape((batch_size, -1, 3, 3))
         ref_pred_pose_rot6d = rotmat_to_rot6d(ref_pred_pose_reshx33.reshape((-1, 3, 3))).reshape((batch_size, -1, 6))
 
@@ -788,8 +779,6 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
 
     def forward_with_multiple_refinements(self, input_img, norm_dict=None, bone_lengths_prepared=None, betas=None):
         
-        # import pdb; pdb.set_trace()
-
         # run normal network part
         output, output_unnorm, output_reproj, output_ref_unnorm, output_orig_ref_comparison = self.forward(input_img, norm_dict=norm_dict, bone_lengths_prepared=bone_lengths_prepared, betas=betas)
 
@@ -848,7 +837,6 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
                                         pose=ref_pred_pose_reshx33, trans=ref_pred_trans, get_skin=True, keyp_conf=self.smal_keyp_conf, 
                                         shapedirs_sel=output_ref_new['shapedirs'])
 
-        # ref_V, ref_keyp_green_3d, _ = self.smal(beta=output_ref_new['betas'], betas_limbs=output_ref_new['betas_limbs'], pose=ref_pred_pose_reshx33, trans=ref_pred_trans, get_skin=True, keyp_conf=self.smal_keyp_conf, shapedirs_sel=output_ref_new['shapedirs'])
         ref_keyp_3d = ref_keyp_green_3d[:, :self.n_keyp, :]     # (bs, 20, 3)
 
         if not self.silh_no_tail:
@@ -891,25 +879,6 @@ class ModelImageTo3d_withshape_withproj(nn.Module):
             'output_ref_unnorm_new': output_ref_unnorm_new, 
             'output_orig_ref_comparison_new': output_orig_ref_comparison_new}
         return results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     def render_vis_nograd(self, vertices, focal_lengths, color=0):

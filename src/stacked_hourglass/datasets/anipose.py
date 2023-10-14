@@ -21,16 +21,12 @@ from pycocotools.mask import decode as decode_RLE
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../'))
-# import stacked_hourglass.res
-# from stacked_hourglass.datasets.common import DataInfo
 from src.configs.anipose_data_info import COMPLETE_DATA_INFO
 from src.stacked_hourglass.utils.imutils import load_image, draw_labelmap, draw_multiple_labelmaps
 from src.stacked_hourglass.utils.misc import to_torch
 from src.stacked_hourglass.utils.transforms import shufflelr, crop, color_normalize, fliplr, transform
 import src.stacked_hourglass.datasets.utils_stanext as utils_stanext 
 from src.stacked_hourglass.utils.visualization import save_input_image_with_keypoints
-# from configs.dog_breeds.dog_breed_class import COMPLETE_ABBREV_DICT, COMPLETE_SUMMARY_BREEDS, SIM_MATRIX_RAW, SIM_ABBREV_INDICES 
-
 
 
 class AniPose(data.Dataset):
@@ -90,18 +86,9 @@ class AniPose(data.Dataset):
         all_annot_files_1 = glob.glob(self.folder_annot_1 + '/*.xml')       #  200
         all_annot_files = all_annot_files_0 + all_annot_files_1
 
-        
-        # old for hg_anipose_v0
-        # self.train_name_list = all_annot_files
-        # self.test_name_list = all_annot_files[0:50] + all_annot_files[200:250]
         # new for hg_anipose_v1
         self.train_name_list = all_annot_files[:-50]
         self.test_name_list = all_annot_files[-50:] 
-
-        '''all_annot_files.sort()
-
-        self.train_name_list = all_annot_files[:24]
-        self.test_name_list = all_annot_files[24:36]'''
 
         print('anipose dataset size: ')
         print(len(self.train_name_list))
@@ -189,7 +176,6 @@ class AniPose(data.Dataset):
             img_path = os.path.join(self.folder_imgs_0, annot_dict['image'] + '.jpg')
             keyword_ymin = 'ymin'
         else:
-            # import pdb; pdb.set_trace()
             img_path = os.path.join(self.folder_imgs_1, annot_dict['image'])
             keyword_ymin = 'xmax'
 

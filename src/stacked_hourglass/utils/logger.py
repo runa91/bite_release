@@ -11,7 +11,7 @@ __all__ = ['Logger']
 class Logger:
     """Log training metrics to a file."""
     def __init__(self, fpath, resume=False):
-        if resume:   ############################################################################
+        if resume:   
             # Read header names and previously logged values.
             with open(fpath, 'r') as f:
                 header_line = f.readline()

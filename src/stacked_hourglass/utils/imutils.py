@@ -77,7 +77,6 @@ def draw_labelmap_orig(img, pt, sigma, type='Gaussian'):
     return to_torch(img), 1
 
 
-
 def draw_labelmap(img, pt, sigma, type='Gaussian'):
     # Draw a 2D gaussian
     # real probability distribution: the sum of all values is 1 
@@ -119,7 +118,4 @@ def draw_multiple_labelmaps(out_res, pts, sigma, type='Gaussian'):
     visibility_orig = imgs_new.sum(axis=2).sum(axis=1)   # shape: (n_pts)
     visibility = torch.zeros((n_pts, 1), dtype=torch.float32)
     visibility[visibility_orig>=0.99999] = 1.0
-
-    # import pdb; pdb.set_trace()
-
     return imgs_new, visibility.int()

@@ -101,8 +101,6 @@ def get_single_crop_dataset_from_image(input_image, bbox=None):
     return val_dataset, val_loader, len_val_dataset, test_name_list, stanext_data_info, stanext_acc_joints
 
 
-
-
 def get_norm_dict(data_info=None, device="cuda"):
     if data_info is None:
         from stacked_hourglass.datasets.stanext24 import StanExt

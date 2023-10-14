@@ -27,7 +27,6 @@ def do_training_step(model, optimiser, input, target, meta, data_info, target_we
         output = model(input)
 
         # original: loss = sum(joints_mse_loss(o, target, target_weight) for o in output)
-        # NEW: 
         loss = sum(joints_mse_loss_onKPloc(o, target, meta, target_weight) for o in output)
 
         # Backward pass and parameter update.
@@ -81,9 +80,7 @@ def do_validation_step(model, input, target, meta, data_info, target_weight=None
     output = model(input)
 
     # original: loss = sum(joints_mse_loss(o, target, target_weight) for o in output)
-    # NEW: 
     loss = sum(joints_mse_loss_onKPloc(o, target, meta, target_weight) for o in output)
-
 
     # Get the heatmaps.
     if flip:
@@ -123,9 +120,6 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
         input = input.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
         target_weight = meta['target_weight'].to(device, non_blocking=True)
-
-        # import pdb; pdb.set_trace()
-
         heatmaps, loss = do_validation_step(model, input, target, meta, data_info, target_weight, flip)
 
         # Calculate PCK from the predicted heatmaps.
@@ -136,9 +130,6 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
         # NEW for visualization: (and redundant, but for visualization)
         preds_unprocessed, preds_unprocessed_maxval = get_preds_soft(heatmaps, return_maxval=True)
         # preds_unprocessed, preds_unprocessed_norm, preds_unprocessed_maxval = get_preds_soft(heatmaps, return_maxval=True, norm_and_unnorm_coords=True)
-
-
-        # import pdb; pdb.set_trace()
 
         ind = 0
         for example_index, pose in zip(meta['index'], preds):
@@ -154,11 +145,7 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
                 # the following line (with -1) should not be needed anymore after cvpr (after bugfix01 in data preparation 08.09.2022)
                 # pred_unp_prep[:, :2] = pred_unp_prep[:, :2] - 1
                 # save_input_image_with_keypoints(inp_img, pred_unp_prep, out_path=out_name, threshold=0.1, print_scores=True)    # here we have default ratio_in_out=4.
-
                 # NEW: 08.09.2022 after bugfix01
-
-                # import pdb; pdb.set_trace()
-
                 pred_unp_prep[:, :2] = pred_unp_prep[:, :2] * 4 
 
                 if 'name' in meta.keys():       # we do this for the stanext set
@@ -178,19 +165,6 @@ def do_validation_epoch(val_loader, model, device, data_info, flip=False, quiet=
                     with open(out_name_json, 'w') as outfile: json.dump(res_dict, outfile)
                 else:
                     save_input_image_with_keypoints(inp_img, pred_unp_prep, out_path=out_name, ratio_in_out=1.0, threshold=0.1, print_scores=True)    # threshold=0.3
-
-
-
-                '''# animalpose_hg8_v0 (did forget to subtract 1 in dataset)
-                pred_unp_prep[:, :2] = pred_unp_prep[:, :2] * 4     ############ Why is this necessary???
-                pred_unp_prep[:, :2] = pred_unp_prep[:, :2] - 1
-                save_input_image_with_keypoints(inp_img, pred_unp_prep, out_path=out_name, ratio_in_out=1.0, threshold=0.1, print_scores=True)    # threshold=0.3
-                out_name_json = os.path.join(save_imgs_path, 'res_' + str( example_index.item()) + '.json')
-                res_dict = {
-                    'pred_joints_256': list(pred_unp_prep.cpu().numpy().astype(float).reshape((-1))),
-                    'center': list(meta['center'][ind, :].cpu().numpy().astype(float).reshape((-1))),
-                    'scale': meta['scale'][ind].item()}
-                with open(out_name_json, 'w') as outfile: json.dump(res_dict, outfile)'''
 
                 ind += 1
 

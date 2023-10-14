@@ -7,8 +7,6 @@ import pickle as pkl
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
-# from priors.pose_prior_35 import Prior
-# from priors.tiger_pose_prior.tiger_pose_prior import GaussianMixturePrior
 from priors.normalizing_flow_prior.normalizing_flow_prior import NormalizingFlowPrior
 from priors.shape_prior import ShapePrior
 from lifting_to_3d.utils.geometry_utils import rot6d_to_rotmat, batch_rot2aa, geodesic_loss_R
@@ -49,19 +47,12 @@ class LossRef(torch.nn.Module):
         self.remeshing_relevant_faces = torch.tensor(self.remeshing_dict['smal_faces'][self.remeshing_dict['faceid_closest']], dtype=torch.long)
         self.remeshing_relevant_barys = torch.tensor(self.remeshing_dict['barys_closest'], dtype=torch.float32)
 
-
-
         # load 3d data for the unity dogs (an optional shape prior for 11 breeds)
         self.unity_smal_shape_prior_dogs = SMAL_MODEL_CONFIG[self.smal_model_type]['unity_smal_shape_prior_dogs']
         if self.unity_smal_shape_prior_dogs is not None:
             self.dog_betas_unity = load_dog_betas_for_3dcgmodel_loss(self.unity_smal_shape_prior_dogs, self.smal_model_type)
         else:
             self.dog_betas_unity = None
-
-
-
-
-
 
 
     def forward(self, output_ref, output_ref_comp, target_dict, weight_dict_ref):
@@ -169,10 +160,6 @@ class LossRef(torch.nn.Module):
                 loss_shape_weighted_list.append(weight_sp * loss_shape_tmp)
         loss_shape_weighted = torch.stack((loss_shape_weighted_list)).sum()
 
-
-
-
-
         # 3D loss for dogs for which we have a unity model or toy figure
         loss_dict_temp['models3d'] = torch.zeros((1), device=device).mean().to(output_ref['betas'].device)
         if 'models3d' in weight_dict_ref.keys():
@@ -190,16 +177,6 @@ class LossRef(torch.nn.Module):
                 weight_dict_ref['models3d'] = 0.0
         else:
             weight_dict_ref['models3d'] = 0.0
-
-
-
-
-
-
-
-
-
-
 
         # weight the losses
         loss = torch.zeros((1)).mean().to(device=output_ref['keyp_2d'].device, dtype=output_ref['keyp_2d'].dtype)

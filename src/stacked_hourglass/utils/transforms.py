@@ -84,7 +84,6 @@ def transform(pt, center, scale, res, invert=0, rot=0, as_int=True):
         return new_pt[:2] + 1
 
 
-
 def transform_preds(coords, center, scale, res):
     # size = coords.size()
     # coords = coords.view(-1, coords.size(-1))
